@@ -79,30 +79,40 @@ void atualiza_uf(cidadao cidadaos[500], int *tam, int id) {
   scanf(" %s", cidadaos[i].UF);
 }
 
+void print_menu() {
+  printf("\nAtendimento ao Cidadao\n-----------------------\n");
+  printf("1 - CIDADÃO\n");
+  printf("2 - GERAR SENHA\n");
+  printf("3 - ATENDIMENTO AO CIDADAO\n");
+  printf("S - SAIR\n");
+}
+
+void print_menu_cidadao() {
+  printf("\n1 - Cadastrar\n");
+  printf("2 - Pesquisar por Código\n");
+  printf("3 - Atualizar Cadastro\n");
+  printf("4 - Excluir Cadastro\n");
+  printf("0 - Voltar\n");
+}
+
 int main(void) {
   cidadao cidadaos[500];
-  int qtd_cidadao, id, indice_cidadadao;
-  int cidadao, gerar_senha, atend, sair;
-  char op[20];
-  char op_cidadao[20];
-  int cadastrar, excluir, imprime, atualiza, at_nome, at_idade, at_uf;
+  int qtd_cidadao;
+  char op_cid, op;
   qtd_cidadao = 0;
   do {
-    scanf(" %[^\n]", op);
-    cidadao = strcmp(op, "cidadao");
-    atend = strcmp(op, "atendimento");
-    gerar_senha = strcmp(op, "gerar senha");
-    sair = strcmp(op, "sair");
-
-    if(cidadao == 0) {
-      scanf(" %[^\n]", op_cidadao);
-      cadastrar = strcmp(op_cidadao, "cadastrar");
-      excluir = strcmp(op_cidadao, "excluir");
-      imprime = strcmp(op_cidadao, "imprime");
-      atualiza = strcmp(op_cidadao, "atualiza");
+    print_menu();
+    scanf(" %c", &op);
+    if(op == '1') {
+      print_menu_cidadao();
+      scanf(" %c", &op_cid);
+      if(op_cid == '1') {
+        cadastrar_cidadao(cidadaos, &qtd_cidadao);
+      }
     }
 
-  } while(sair != 0);
+
+  } while(op != 's');
 
 
   return 0;
