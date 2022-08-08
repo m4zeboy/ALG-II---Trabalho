@@ -41,7 +41,7 @@ int busca_indice_cidadao(int id, cidadao cidadaos[500], int *tam) {
 
 void imprime_cidadao(cidadao cidadaos[500], int indice_cidadao) {
   if(indice_cidadao == -1) {
-    printf("Cidadão não cadastrado.");
+    printf("\nO Registro do cidadão não está cadastrado, ou foi excluído.\n");
   } else {
     printf("CIDADÃO - %d\n", cidadaos[indice_cidadao].id);
     printf("NOME: %s\t IDADE: %d\t UF: %s\n", cidadaos[indice_cidadao].nome, cidadaos[indice_cidadao].idade, cidadaos[indice_cidadao].UF);
@@ -97,19 +97,27 @@ void print_menu_cidadao() {
 
 int main(void) {
   cidadao cidadaos[500];
-  int qtd_cidadao;
+  int qtd_cidadao, id, indice;
   char op_cid, op;
   qtd_cidadao = 0;
   do {
     print_menu();
     scanf(" %c", &op);
-    if(op == '1') {
+    if(op == '1'){
       print_menu_cidadao();
       scanf(" %c", &op_cid);
-      if(op_cid == '1') {
+      if(op_cid == '1'){
         cadastrar_cidadao(cidadaos, &qtd_cidadao);
       }
+      if(op_cid == '2') {
+        printf("\nInforme o código do cidadão: ");
+        scanf("%d", &id);
+        indice = busca_indice_cidadao(id, cidadaos, &qtd_cidadao);
+        imprime_cidadao(cidadaos, indice);
+      }
+
     }
+    
 
 
   } while(op != 's');
