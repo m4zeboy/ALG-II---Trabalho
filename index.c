@@ -116,11 +116,11 @@ void print_menu_atualiza_cidadao() {
 }
 
 void gerar_senha(atendimento fila[], int *qtd_fila, int id) {
-  fila[*qtd_fila].senha = qtd_fila;
+  fila[*qtd_fila].senha = *qtd_fila;
   fila[*qtd_fila].id_cid = id;
   printf("\nInforme o tipo de atendimento: \nDOCUMENTOS\nTRANSPORTE\nMORADIA\n");
   scanf(" %s", fila[*qtd_fila].tipo_atendimento);
-  qtd_fila = qtd_fila + 1;
+  *qtd_fila = *qtd_fila + 1;
 }
 
 int main(void) {
@@ -128,13 +128,13 @@ int main(void) {
   atendimento fila[50];
   atendimento fila_p[50];
 
-  int qtd_cidadao, id, indice, qtd_fila, qtd_fila_p;
+  int qtd_cidadao, id, indice, qtd_fila, qtd_fila_p, total_senhas;
   char op_cid, op, op_at_cid;
   qtd_cidadao = 0;
 
   qtd_fila = 0;
   qtd_fila_p = 0;
-
+  total_senhas = 0;
   do {
     print_menu();
     scanf(" %c", &op);
@@ -185,28 +185,31 @@ int main(void) {
     }
     
     if(op == '2') {
-      printf("\nInforme o código do cidadão: ");
-      scanf("%d", &id);
-      indice = busca_indice_cidadao(id, cidadaos, &qtd_cidadao);
-      
-      if(indice != -1) {
-        if(qtd_fila + qtd_fila_p == 99) {
-          printf("\nJá foi realizado 100 atendimentos, até amanhã.\n");
-        } else {
-          if(cidadaos[indice].idade >= 65) {
-            gerar_senha(fila_p, &qtd_fila_p, id);
-          } else {
-            gerar_senha(fila, &qtd_fila, id);
-          }
-        }
-      
+      if(total_senhas == 100) {
+        printf("\n Já existem 100 pessoas na fila. Até amanhã.\n");
       } else {
-        printf("\nO Registro do cidadão não está cadastrado, ou foi excluído.\n");
+        printf("\nInforme o código do cidadão: ");
+        scanf("%d", &id);
+        indice = busca_indice_cidadao(id, cidadaos, &qtd_cidadao);
+        if(cidadaos[indice].idade >=65) {
+          gerar_senha(fila_p, &qtd_fila_p, id);
+          total_senhas = total_senhas + 1;
+          printf("\nfila pref + 1\n");
+          printf("\n%d\n", qtd_fila_p);
+        } else {
+          gerar_senha(fila, &qtd_fila, id);
+          total_senhas = total_senhas + 1;
+          printf("\nfila nao pref + 1\n");
+          printf("\n%d\n", qtd_fila);
+        }
       }
     }
 
-
-  } while(op != 's');
+    if((op == 's' || op == 'S') && (qtd_fila > -1 || qtd_fila_p > -1)) { 
+      printf("\nAinda há pessoas na fila para serem atendidas.\n");
+    }
+   
+  } while((op != 's' || op != 'S') && (qtd_fila > -1 || qtd_fila_p > -1));
 
 
   return 0;
