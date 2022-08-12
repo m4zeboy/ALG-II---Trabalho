@@ -12,7 +12,7 @@ typedef struct {
   int id_cid;
   char tipo_atendimento[15];
   int senha;
-} atendimento;
+} pedido;
 
 void troca(cidadao *a, cidadao *b) {
   cidadao aux;
@@ -115,7 +115,7 @@ void print_menu_atualiza_cidadao() {
   printf("1 - UF\n");
 }
 
-void gerar_senha(atendimento fila[], int *qtd_fila, int id) {
+void gerar_senha(pedido fila[], int *qtd_fila, int id) {
   fila[*qtd_fila].senha = *qtd_fila;
   fila[*qtd_fila].id_cid = id;
   printf("\nInforme o tipo de atendimento: \nDOCUMENTOS\nTRANSPORTE\nMORADIA\n");
@@ -125,8 +125,8 @@ void gerar_senha(atendimento fila[], int *qtd_fila, int id) {
 
 int main(void) {
   cidadao cidadaos[500];
-  atendimento fila[50];
-  atendimento fila_p[50];
+  pedido fila[50];
+  pedido fila_p[50];
 
   int qtd_cidadao, id, indice, qtd_fila, qtd_fila_p, total_senhas;
   char op_cid, op, op_at_cid;
@@ -135,6 +135,7 @@ int main(void) {
   qtd_fila = 0;
   qtd_fila_p = 0;
   total_senhas = 0;
+  
   do {
     print_menu();
     scanf(" %c", &op);
@@ -194,12 +195,12 @@ int main(void) {
         if(cidadaos[indice].idade >=65) {
           gerar_senha(fila_p, &qtd_fila_p, id);
           total_senhas = total_senhas + 1;
-          printf("\nfila pref + 1\n");
+          printf("\nPedido adcionado na fila não preferencial.\n");
           printf("\n%d\n", qtd_fila_p);
         } else {
           gerar_senha(fila, &qtd_fila, id);
           total_senhas = total_senhas + 1;
-          printf("\nfila nao pref + 1\n");
+          printf("\nPedido adcionado na fila preferencial.\n");
           printf("\n%d\n", qtd_fila);
         }
       }
