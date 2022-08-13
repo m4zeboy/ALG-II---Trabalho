@@ -1,98 +1,140 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct {
+typedef struct
+{
   int id;
   char nome[30];
   int idade;
   char UF[3];
 } cidadao;
 
-typedef struct {
+typedef struct
+{
   int id_cid;
-  char tipo_atendimento[15];
+  char tipo_atendimento;
   int senha;
-} pedido;
+} atendimento_solicitado;
 
-void troca(cidadao *a, cidadao *b) {
+typedef struct
+{
+  char servidor[30];
+  int senha;
+  char tipo_atendimento;
+  int id_cid;
+  int mesa;
+} atendimento;
+
+void troca_cidadao(cidadao *a, cidadao *b)
+{
   cidadao aux;
   aux = *a;
   *a = *b;
   *b = aux;
 }
 
-void cadastrar_cidadao(cidadao cidadadaos[500], int *tam) {
+void cadastrar_cidadao(cidadao cidadaos[500], int *tam)
+{
   printf("\nCADASTRAR CIDADÃO\n");
-  printf("ID: \n");
-  scanf("%d", &cidadadaos[*tam].id);
-  printf("NOME: \n");
-  scanf(" %[^\n]", cidadadaos[*tam].nome);
-  printf("IDADE: \n");
-  scanf("%d", &cidadadaos[*tam].idade);
-  printf("UF: \n");
-  scanf("%s", cidadadaos[*tam].UF);
-  *tam=*tam+1;
+  printf("ID: ");
+  scanf("%d", &cidadaos[*tam].id);
+  printf("\nNOME: ");
+  scanf(" %[^\n]", cidadaos[*tam].nome);
+  printf("\nIDADE: ");
+  scanf("%d", &cidadaos[*tam].idade);
+  printf("\nUF: ");
+  scanf("%s", cidadaos[*tam].UF);
+  *tam = *tam + 1;
   printf("\nCidadão Cadastrado\n");
 }
 
-int busca_indice_cidadao(int id, cidadao cidadaos[500], int *tam) {
+int busca_indice_cidadao(cidadao cidadaos[500], int *tam, int id)
+{
   int i, indice_cidadao;
   indice_cidadao = -1;
-  for(i=0;i<*tam;i++) {
-    if(cidadaos[i].id == id) {
+  for (i = 0; i < *tam; i++)
+  {
+    if (cidadaos[i].id == id)
+    {
       indice_cidadao = i;
     }
   }
   return indice_cidadao;
 }
 
-void imprime_cidadao(cidadao cidadaos[500], int indice_cidadao) {
-  if(indice_cidadao == -1) {
+void imprime_cidadao(cidadao cidadaos[500], int *tam)
+{
+  int id, indice_cidadao;
+  printf("\nInforme o ID do cidadão: ");
+  scanf("%d", &id);
+  indice_cidadao = busca_indice_cidadao(cidadaos, tam, id);
+  if (indice_cidadao == -1)
+  {
     printf("\nO Registro do cidadão não está cadastrado, ou foi excluído.\n");
-  } else {
+  }
+  else
+  {
     printf("\nCIDADÃO - %d\n", cidadaos[indice_cidadao].id);
     printf("NOME: %s\t IDADE: %d\t UF: %s\n\n", cidadaos[indice_cidadao].nome, cidadaos[indice_cidadao].idade, cidadaos[indice_cidadao].UF);
   }
 }
 
-void exclui_cidadao(cidadao cidadaos[500], int *tam, int id) {
-  int indice_cidadao = busca_indice_cidadao(id, cidadaos, tam);
-  int i;
-  if(indice_cidadao == -1) {
+void exclui_cidadao(cidadao cidadaos[500], int *tam)
+{
+  int indice_cidadao, i, id;
+  printf("\nInforme o ID do Cidadão: ");
+  scanf("%d", &id);
+  indice_cidadao = busca_indice_cidadao(cidadaos, tam, id);
+  if (indice_cidadao == -1)
+  {
     printf("\nCidadão não cadastrado.\n");
-  } else {
-    for(i=indice_cidadao;i-1<*tam;i++) {
-      troca(&cidadaos[i], &cidadaos[i+1]); 
+  }
+  else
+  {
+    for (i = indice_cidadao; i - 1 < *tam; i++)
+    {
+      troca_cidadao(&cidadaos[i], &cidadaos[i + 1]);
     }
-    *tam = *tam -1;
+    *tam = *tam - 1;
     printf("\nCadastro Excluído\n");
   }
 }
 
-void atualiza_nome(cidadao cidadaos[500], int *tam, int id) {
-  int i = busca_indice_cidadao(id, cidadaos, tam);
-  printf("Digite novo nome: ");
+void atualiza_nome(cidadao cidadaos[500], int *tam)
+{
+  int i, id;
+  printf("\nInforme o ID do cidadão: ");
+  scanf("%d", &id);
+  i = busca_indice_cidadao(cidadaos, tam, id);
+  printf("\nDigite novo nome: ");
   scanf(" %[^\n]", cidadaos[i].nome);
   printf("\nCadastro atualizado\n");
 }
 
-void atualiza_idade(cidadao cidadaos[500], int *tam, int id) {
-  int i = busca_indice_cidadao(id, cidadaos, tam);
+void atualiza_idade(cidadao cidadaos[500], int *tam)
+{
+  int i, id;
+  printf("\nInforme o ID do cidadão: ");
+  scanf("%d", &id);
+  i = busca_indice_cidadao(cidadaos, tam, id);
   printf("Digite nova idade: ");
   scanf("%d", &cidadaos[i].idade);
   printf("\nCadastro atualizado\n");
-
 }
 
-void atualiza_uf(cidadao cidadaos[500], int *tam, int id) {
-  int i = busca_indice_cidadao(id, cidadaos, tam);
+void atualiza_uf(cidadao cidadaos[500], int *tam)
+{
+  int i, id;
+  printf("\nInforme o ID do cidadão: ");
+  scanf("%d", &id);
+  i = busca_indice_cidadao(cidadaos, tam, id);
   printf("Digite nova UF: ");
   scanf(" %s", cidadaos[i].UF);
   printf("\nCadastro atualizado\n");
-
 }
 
-void print_menu() {
+void print_menu()
+{
   printf("\nAtendimento ao Cidadao\n-----------------------\n");
   printf("1 - CIDADÃO\n");
   printf("2 - GERAR SENHA\n");
@@ -100,7 +142,8 @@ void print_menu() {
   printf("S - SAIR\n");
 }
 
-void print_menu_cidadao() {
+void print_menu_cidadao()
+{
   printf("\n1 - Cadastrar\n");
   printf("2 - Pesquisar por Código\n");
   printf("3 - Atualizar Cadastro\n");
@@ -108,110 +151,168 @@ void print_menu_cidadao() {
   printf("0 - Voltar\n");
 }
 
-void print_menu_atualiza_cidadao() {
+void print_menu_atualiza_cidadao()
+{
   printf("\nEscolha o campo a ser atualizado: \n");
   printf("1 - Nome\n");
   printf("2 - Idade\n");
-  printf("1 - UF\n");
+  printf("3 - UF\n");
 }
 
-void gerar_senha(pedido fila[], int *qtd_fila, int id) {
-  fila[*qtd_fila].senha = *qtd_fila;
+void gerar_senha(atendimento_solicitado fila[], int *qtd_fila, int id, int *senhas)
+{
+  fila[*qtd_fila].senha = *senhas + 1;
   fila[*qtd_fila].id_cid = id;
-  printf("\nInforme o tipo de atendimento: \nDOCUMENTOS\nTRANSPORTE\nMORADIA\n");
-  scanf(" %s", fila[*qtd_fila].tipo_atendimento);
+  printf("\nInforme o tipo de atendimento: \nD - DOCUMENTOS\nT - TRANSPORTE\nM - MORADIA\n");
+  scanf(" %c", &fila[*qtd_fila].tipo_atendimento);
   *qtd_fila = *qtd_fila + 1;
+  *senhas = *senhas + 1;
 }
 
-int main(void) {
+void inicia_atendimento(atendimento atendimentos[], int *tam, atendimento_solicitado fila[])
+{
+  printf("\nDiga o nome do servidor: ");
+  scanf(" %[^\n]", atendimentos[*tam].servidor);
+  printf("\nInforme o número da mesa: ");
+  scanf("%d", &atendimentos[*tam].mesa);
+  atendimentos[*tam].senha = fila[0].senha;
+  atendimentos[*tam].id_cid = fila[0].id_cid;
+  atendimentos[*tam].tipo_atendimento = fila[0].tipo_atendimento;
+  *tam = *tam + 1;
+}
+
+void fecha_atendimento(atendimento_solicitado fila[], int *tam)
+{
+  int i;
+  for (i = 0; i < *tam - 1; i++)
+  {
+    fila[i] = fila[i + 1];
+  }
+  *tam = *tam - 1;
+}
+
+void lista_atendimento_fechados(atendimento atendimentos[], int tam, cidadao cidadaos[], int *tam_cid)
+{
+  int i, indice_cidadao;
+  for(i=0;i<tam;i++) {
+    indice_cidadao = busca_indice_cidadao(cidadaos, tam_cid, atendimentos[i].id_cid);
+    printf("\nAtendimentos Realizados\n");
+    printf("Senha: %d - Cidadão: %s - Servidor: %s - Mesa: %d\n", atendimentos[i].senha, cidadaos[indice_cidadao].nome, atendimentos[i].servidor, atendimentos[i].mesa);
+    
+  }
+}
+
+int main(void)
+{
   cidadao cidadaos[500];
-  pedido fila[50];
-  pedido fila_p[50];
+  atendimento_solicitado fila[50], fila_p[50];
+  atendimento atendimentos[100];
+  int tam_cid, tam_fila, tam_fila_p, tam_at, tem_pessoa_para_ser_atendida, senhas, id, indice_cidadao;
+  char op, op_cid, op_cid_at;
+  tam_cid = 0;
+  tam_fila = 0;
+  tam_fila_p = 0;
+  senhas = 0;
+  tam_at= 0;
+  tem_pessoa_para_ser_atendida = 0;
 
-  int qtd_cidadao, id, indice, qtd_fila, qtd_fila_p, total_senhas;
-  char op_cid, op, op_at_cid;
-  qtd_cidadao = 0;
-
-  qtd_fila = 0;
-  qtd_fila_p = 0;
-  total_senhas = 0;
-  
-  do {
+  do
+  {
     print_menu();
     scanf(" %c", &op);
-    if(op == '1'){
+    if (op == '1')
+    {
       print_menu_cidadao();
       scanf(" %c", &op_cid);
-      if(op_cid == '1'){
-        cadastrar_cidadao(cidadaos, &qtd_cidadao);
-      }
-      if(op_cid == '2') {
-        printf("\nInforme o código do cidadão: ");
-        scanf("%d", &id);
-        indice = busca_indice_cidadao(id, cidadaos, &qtd_cidadao);
-        imprime_cidadao(cidadaos, indice);
-      }
-      if(op_cid == '3') {
+      switch (op_cid)
+      {
+      case '1':
+        cadastrar_cidadao(cidadaos, &tam_cid);
+        break;
+      case '2':
+        imprime_cidadao(cidadaos, &tam_cid);
+        break;
+      case '3':
         print_menu_atualiza_cidadao();
-        scanf(" %c", &op_at_cid);
-        switch (op_at_cid){
-        case '1':
-          printf("\nInforme o código do cidadão: ");
-          scanf("%d", &id);
-          atualiza_nome(cidadaos, &qtd_cidadao, id);
-          break;
-        case '2':
-          printf("\nInforme o código do cidadão: ");
-          scanf("%d", &id);
-          atualiza_idade(cidadaos, &qtd_cidadao, id);
-        break;
-        case '3':
-          printf("\nInforme o código do cidadão: ");
-          scanf("%d", &id);
-          atualiza_uf(cidadaos, &qtd_cidadao, id);
-        break;
-        default:
-          break;
+        scanf(" %c", &op_cid_at);
+        if (op_cid_at == '1')
+        {
+          atualiza_nome(cidadaos, &tam_cid);
         }
-      }
-      if(op_cid == '4') {
-        printf("\nInforme o código do cidadão a ser excluído: ");
-        scanf(" %d", &id);
-        exclui_cidadao(cidadaos, &qtd_cidadao, id);
-      }
-      if(op_cid == '0') {
-        print_menu();
-        scanf(" %c", &op);
+        if (op_cid_at == '2')
+        {
+          atualiza_idade(cidadaos, &tam_cid);
+        }
+        if (op_cid_at == '3')
+        {
+          atualiza_uf(cidadaos, &tam_cid);
+        }
+        break;
+      case '4':
+        exclui_cidadao(cidadaos, &tam_cid);
+        break;
+      default:
+        break;
       }
     }
-    
-    if(op == '2') {
-      if(total_senhas == 100) {
-        printf("\n Já existem 100 pessoas na fila. Até amanhã.\n");
-      } else {
-        printf("\nInforme o código do cidadão: ");
+    if (op == '2')
+    {
+      if (senhas == 100)
+      {
+        printf("Já foram solicitados 100 atendimentos hoje. Até amanhã.");
+      }
+      else
+      {
+        printf("\nInforme o ID do cidadão: ");
         scanf("%d", &id);
-        indice = busca_indice_cidadao(id, cidadaos, &qtd_cidadao);
-        if(cidadaos[indice].idade >=65) {
-          gerar_senha(fila_p, &qtd_fila_p, id);
-          total_senhas = total_senhas + 1;
-          printf("\nPedido adcionado na fila não preferencial.\n");
-          printf("\n%d\n", qtd_fila_p);
-        } else {
-          gerar_senha(fila, &qtd_fila, id);
-          total_senhas = total_senhas + 1;
-          printf("\nPedido adcionado na fila preferencial.\n");
-          printf("\n%d\n", qtd_fila);
+        indice_cidadao = busca_indice_cidadao(cidadaos, &tam_cid, id);
+        if (indice_cidadao == -1)
+        {
+          printf("\nO Registro do cidadão não está cadastrado, ou foi excluído.\n");
+        }
+        else
+        {
+          if (cidadaos[indice_cidadao].idade >= 65)
+          {
+            gerar_senha(fila_p, &tam_fila_p, id, &senhas);
+            printf("\nAtendimento solicitado colocado na fila PREFERENCIAL.\n");
+            tem_pessoa_para_ser_atendida++;
+          }
+          else
+          {
+            gerar_senha(fila, &tam_fila, id, &senhas);
+            printf("\nAtendimento solicitado colocado na fila NÃO PREFERENCIAL.\n");
+            tem_pessoa_para_ser_atendida++;
+          }
         }
       }
     }
-
-    if((op == 's' || op == 'S') && (qtd_fila > -1 || qtd_fila_p > -1)) { 
-      printf("\nAinda há pessoas na fila para serem atendidas.\n");
+    if (op == '3')
+    {
+      if(tam_fila_p > 0) {
+        inicia_atendimento(atendimentos, &tam_at, fila_p);
+        printf("\nPRÓXIMO ATENDIMENTO - SENHA %d\nServiço: %c\nMesa: %d\n", atendimentos[tam_at - 1].senha, atendimentos[tam_at - 1].tipo_atendimento,  atendimentos[tam_at - 1].mesa);
+        fecha_atendimento(fila_p, &tam_fila_p);
+        tem_pessoa_para_ser_atendida--;
+      } else {
+        inicia_atendimento(atendimentos, &tam_at, fila);
+        printf("\nPRÓXIMO ATENDIMENTO - SENHA %d\nServiço: %c\nMesa: %d\n", atendimentos[tam_at - 1].senha, atendimentos[tam_at - 1].tipo_atendimento,  atendimentos[tam_at - 1].mesa);
+        fecha_atendimento(fila, &tam_fila);
+        tem_pessoa_para_ser_atendida--;
+      }
     }
-   
-  } while((op != 's' || op != 'S') && (qtd_fila > -1 || qtd_fila_p > -1));
 
+    if (op == 's')
+    {
+      if (tem_pessoa_para_ser_atendida == 0)
+      {
+        lista_atendimento_fechados(atendimentos, tam_at, cidadaos, &tam_cid);
+        break;
+      } else {
+        printf("\nAinda há %d pessoas para serem atendidas.\n", senhas);
+      }
+    }
+  } while (op != 's' || tem_pessoa_para_ser_atendida > 0);
 
   return 0;
 }

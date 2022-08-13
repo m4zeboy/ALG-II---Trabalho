@@ -1,0 +1,35 @@
+printf("\nSenha: %d - Cidadao: %d - Servidor: %s - Mesa: %d - Atendimento: %s\n", atendimentos[i].senha, atendimentos[i].id_cid, atendimentos[i].servidor, atendimentos[i].mesa, atendimentos[i].tipo_atendimento);
+
+
+if (total_senhas > 0)
+      {
+        printf("\nAinda há pessoas na fila.\n");
+      }
+      else
+      {
+        for (i = 0; i < qtd_at; i++)
+        {
+          printf("\nSenha: %d - Cidadao: %d - Servidor: %s - Mesa: %d - Atendimento: %s\n", atendimentos[i].senha, atendimentos[i].id_cid, atendimentos[i].servidor, atendimentos[i].mesa, atendimentos[i].tipo_atendimento);
+        }
+      }
+
+
+
+      fecha_atendimento(fila, &i);
+  for(j =0;j<i;j++) {
+    printf("\n%d - %c - %d\n", fila[j].id_cid, fila[j].tipo_atendimento, fila[j].senha);
+  }
+
+
+  int i, j;
+  pedido fila[4];
+  for (i=0;i<4;i++) {
+    scanf("%d", &fila[i].id_cid);
+    scanf(" %c", &fila[i].tipo_atendimento);
+    scanf("%d", &fila[i].senha);
+  }
+  fecha_atendimento(fila, &i);
+
+  for(j=0;j<i-1;j++) {
+    printf("\n%d - %c - %d\n", fila[j].id_cid, fila[j].tipo_atendimento, fila[j].senha);
+  }
