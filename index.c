@@ -386,9 +386,9 @@ void fecha_atendimento(atendimento_solicitado fila[], int *tam)
 }
 
 void escreveAtendimentosRealizadosNoArquivo(atendimento atendimentos_realizados[], int tam_at, cidadao cidadaos[], int *tam_cid) {
-  FILE *DOC = fopen("documentos.csv", "w");
-  FILE *MOR = fopen("moradia.csv", "w");
-  FILE *TRA = fopen("transporte.csv", "w");
+  FILE *DOC = fopen("documentos.csv", "a");
+  FILE *MOR = fopen("moradia.csv", "a");
+  FILE *TRA = fopen("transporte.csv", "a");
   int i, indice_cidadao;
   if(DOC) {
     for(i=0;i<tam_at;i++) {
