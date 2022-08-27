@@ -167,7 +167,18 @@ typedef struct {
         *a = *b;
         *b = aux;
     }
-
+    
+    void ordenarCidadaos(cidadao cidadaos[], int tam_cid) {
+        int i, j;
+        for(i=0;i<tam_cid;i++) {
+            for(j=i+1;j<tam_cid;j++) {
+                if(cidadaos[i].id > cidadaos[j].id) {
+                    troca_cidadao(&cidadaos[i], &cidadaos[j]);
+                }
+            }
+        }    
+    }
+   
     int removeCidadao(cidadao cidadaos[], int *tam_cid) {
         int i, id;
         int indice;
@@ -263,6 +274,7 @@ int main(void) {
                 if(arq == NULL)
                     printf("\nNão foi possível abrir o arquivo cidadaos.csv.\n");
                 else {
+                    ordenarCidadaos(cidadaos, tam_cid);
                     escreveVetorCidadaos(arq, cidadaos, tam_cid);
                     fclose(arq);
                 } 
@@ -277,10 +289,3 @@ int main(void) {
 
     return 0;
 }
-
-
-
-
-
-
-
