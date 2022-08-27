@@ -74,6 +74,7 @@ typedef struct
   int id_cid;
   char tipo_atendimento;
   int senha;
+  int preferencial;
 } atendimento_solicitado;
 
 typedef struct
@@ -81,9 +82,42 @@ typedef struct
   char servidor[30];
   int senha;
   char tipo_atendimento;
+  int preferencial;
   int id_cid;
   int mesa;
 } atendimento;
+
+void lerCidadaosDoArquivo(cidadao cidadaos[], int *tam)
+{
+  FILE *arq = fopen("cidadaos.csv", "r");
+  int i;
+  if (arq)
+  {
+    fscanf(arq, "%d\n", tam);
+    for (i = 0; i < *tam; i++)
+    {
+      cidadao c;
+      fscanf(arq, "\n%d, %[^,], %d, %[^;];\n", &c.id, c.nome, &c.idade, c.UF);
+      cidadaos[i] = c;
+    }
+    fclose(arq);
+  }
+}
+
+void escreverCidadaosNoArquivo(cidadao cidadaos[], int tam)
+{
+  FILE *arq = fopen("cidadaos.csv", "w");
+  int i;
+  if (arq)
+  {
+    fprintf(arq, "%d\n", tam);
+    for (i = 0; i < tam; i++)
+    {
+      fprintf(arq, "%d, %s, %d, %s;\n", cidadaos[i].id, cidadaos[i].nome, cidadaos[i].idade, cidadaos[i].UF);
+    }
+    fclose(arq);
+  }
+}
 
 int busca_indice_cidadao(cidadao cidadaos[500], int *tam, int id)
 {
@@ -145,7 +179,8 @@ void imprime_cidadao(cidadao cidadaos[500], int *tam)
   else
   {
     printf("\nCIDADÃO - %d\n", cidadaos[indice_cidadao].id);
-    printf("NOME: %s\t IDADE: %d\t UF: %s\n\n", cidadaos[indice_cidadao].nome, cidadaos[indice_cidadao].idade, cidadaos[indice_cidadao].UF);
+    printf("NOME: %s\n", cidadaos[indice_cidadao].nome);
+    printf("IDADE: %d\t UF: %s\n", cidadaos[indice_cidadao].idade, cidadaos[indice_cidadao].UF);
   }
 }
 
@@ -230,6 +265,7 @@ void print_menu()
   printf("1 - CIDADÃO\n");
   printf("2 - GERAR SENHA\n");
   printf("3 - ATENDIMENTO AO CIDADAO\n");
+  printf("4 - RELATÓRIOS\n");
   printf("S - SAIR\n");
 }
 
@@ -260,6 +296,73 @@ void gerar_senha(atendimento_solicitado fila[], int *qtd_fila, int id, int *senh
   *senhas = *senhas + 1;
 }
 
+void lerSenhasNaoAtendidas(atendimento_solicitado fila_p[], atendimento_solicitado fila[], int *tam_fila, int *tam_fila_p, int *tem_pessoa_pra_ser_atendida)
+{
+  FILE *arq = fopen("senhas_nao_atendidas.csv", "r");
+  int i;
+  if (arq)
+  {
+    fscanf(arq, "%d\n", tam_fila);
+    fscanf(arq, "%d\n", tam_fila_p);
+    for (i = 0; i < *tam_fila; i++)
+    {
+      atendimento_solicitado at;
+      fscanf(arq, "\n%d %c %d %d;\n", &at.id_cid, &at.tipo_atendimento, &at.senha, &at.preferencial);
+      fila[i] = at;
+      *tem_pessoa_pra_ser_atendida = *tem_pessoa_pra_ser_atendida + 1;
+    }
+    for (i = 0; i < *tam_fila_p; i++)
+    {
+      atendimento_solicitado at;
+      fscanf(arq, "\n%d %c %d %d;\n", &at.id_cid, &at.tipo_atendimento, &at.senha, &at.preferencial);
+      fila_p[i] = at;
+      *tem_pessoa_pra_ser_atendida = *tem_pessoa_pra_ser_atendida + 1;
+    }
+    fclose(arq);
+  }
+}
+
+void escreverSenhasNaoAtendidas(atendimento_solicitado fila_p[], atendimento_solicitado fila[], int tam_fila, int tam_fila_p) {
+  FILE *arq = fopen("senhas_nao_atendidas.csv", "w");
+  int i;
+  if (arq)
+  {
+    fprintf(arq,"%d\n", tam_fila);
+    fprintf(arq,"%d\n", tam_fila_p);
+    for(i=0;i<tam_fila_p;i++) {
+      fprintf(arq, "%d %c %d %d;\n", fila_p[i].id_cid, fila_p[i].tipo_atendimento, fila_p[i].senha, fila_p[i].preferencial);
+    }
+    for(i=0;i<tam_fila;i++) {
+      fprintf(arq, "%d %c %d %d;\n", fila[i].id_cid, fila[i].tipo_atendimento, fila[i].senha, fila[i].preferencial);
+    }
+    
+    fclose(arq);
+  }
+}
+
+void troca_atendimento(atendimento *a, atendimento *b)
+{
+  atendimento aux;
+  aux = *a;
+  *a = *b;
+  *b = aux;
+}
+
+void ordena_pela_senha(atendimento atendimentos[], int tam)
+{
+  int i, j;
+  for (i = 0; i < tam; i++)
+  {
+    for (j = i + 1; j < tam - 1; j++)
+    {
+      if (atendimentos[i].senha > atendimentos[j].senha)
+      {
+        troca_atendimento(&atendimentos[i], &atendimentos[j]);
+      }
+    }
+  }
+}
+
 void inicia_atendimento(atendimento atendimentos[], int *tam, atendimento_solicitado fila[])
 {
   printf("\nDiga o nome do servidor: ");
@@ -282,6 +385,40 @@ void fecha_atendimento(atendimento_solicitado fila[], int *tam)
   *tam = *tam - 1;
 }
 
+void escreveAtendimentosRealizadosNoArquivo(atendimento atendimentos_realizados[], int tam_at, cidadao cidadaos[], int *tam_cid) {
+  FILE *DOC = fopen("documentos.csv", "a");
+  FILE *MOR = fopen("moradia.csv", "a");
+  FILE *TRA = fopen("transporte.csv", "a");
+  int i, indice_cidadao;
+  if(DOC) {
+    for(i=0;i<tam_at;i++) {
+      indice_cidadao = busca_indice_cidadao(cidadaos, tam_cid, atendimentos_realizados[i].id_cid);
+      if(atendimentos_realizados[i].tipo_atendimento == 'D')
+        fprintf(DOC, "%d %s %s %d %d;\n", atendimentos_realizados[i].senha, cidadaos[indice_cidadao].nome, atendimentos_realizados[i].servidor, atendimentos_realizados[i].mesa, atendimentos_realizados[i].preferencial);
+    }
+  }
+  fclose(DOC);
+
+  if(MOR) {
+    for(i=0;i<tam_at;i++) {
+      indice_cidadao = busca_indice_cidadao(cidadaos, tam_cid, atendimentos_realizados[i].id_cid);
+      if(atendimentos_realizados[i].tipo_atendimento == 'M')
+        fprintf(MOR, "%d %s %s %d %d;\n", atendimentos_realizados[i].senha, cidadaos[indice_cidadao].nome, atendimentos_realizados[i].servidor, atendimentos_realizados[i].mesa, atendimentos_realizados[i].preferencial);
+    }
+  }
+  fclose(MOR);
+
+  if(TRA) {
+    for(i=0;i<tam_at;i++) {
+      indice_cidadao = busca_indice_cidadao(cidadaos, tam_cid, atendimentos_realizados[i].id_cid);
+      if(atendimentos_realizados[i].tipo_atendimento == 'T')
+        fprintf(TRA, "%d %s %s %d %d;\n", atendimentos_realizados[i].senha, cidadaos[indice_cidadao].nome, atendimentos_realizados[i].servidor, atendimentos_realizados[i].mesa, atendimentos_realizados[i].preferencial);
+    }
+  }
+  fclose(TRA);
+
+}
+
 void imprime_atendimento(atendimento at, char nome[30])
 {
   printf("Senha: %d - Cidadão: %s - Servidor: %s - Mesa: %d\n", at.senha, nome, at.servidor, at.mesa);
@@ -291,7 +428,11 @@ void lista_atendimento_fechados(atendimento atendimentos[], int tam, cidadao cid
 {
   int i, indice_cidadao;
   ordena_pela_senha(atendimentos, tam);
+<<<<<<< HEAD:v1/index.c
   
+=======
+
+>>>>>>> 9947bd2a0a747342eec4ee4c86196e4cf433fb8b:index.c
   printf("\nAtendimentos Realizados\n");
   printf("DOCUMENTOS: \n");
   for (i = 0; i < tam; i++)
@@ -346,13 +487,16 @@ int main(void)
   atendimento_solicitado fila[50], fila_p[50];
   atendimento atendimentos[100];
   int tam_cid, tam_fila, tam_fila_p, tam_at, tem_pessoa_para_ser_atendida, senhas, id, indice_cidadao;
-  char op, op_cid, op_cid_at;
+  char op, op_cid, op_cid_at, op_rel;
   tam_cid = 0;
   tam_fila = 0;
   tam_fila_p = 0;
   senhas = 0;
   tam_at = 0;
   tem_pessoa_para_ser_atendida = 0;
+
+  lerCidadaosDoArquivo(cidadaos, &tam_cid);
+  lerSenhasNaoAtendidas(fila_p, fila, &tam_fila_p, &tam_fila, &tem_pessoa_para_ser_atendida);
 
   do
   {
@@ -413,12 +557,14 @@ int main(void)
           if (cidadaos[indice_cidadao].idade >= 65)
           {
             gerar_senha(fila_p, &tam_fila_p, id, &senhas);
+            fila_p[tam_fila_p - 1].preferencial = 1;
             printf("\nAtendimento solicitado colocado na fila PREFERENCIAL.\n");
             tem_pessoa_para_ser_atendida++;
           }
           else
           {
             gerar_senha(fila, &tam_fila, id, &senhas);
+            fila_p[tam_fila - 1].preferencial = 0;
             printf("\nAtendimento solicitado colocado na fila NÃO PREFERENCIAL.\n");
             tem_pessoa_para_ser_atendida++;
           }
@@ -432,26 +578,49 @@ int main(void)
         inicia_atendimento(atendimentos, &tam_at, fila_p);
         printf("\nPRÓXIMO ATENDIMENTO - SENHA %d\nServiço: %c\nMesa: %d\n", atendimentos[tam_at - 1].senha, atendimentos[tam_at - 1].tipo_atendimento, atendimentos[tam_at - 1].mesa);
         fecha_atendimento(fila_p, &tam_fila_p);
-        tem_pessoa_para_ser_atendida--;
+        tem_pessoa_para_ser_atendida = tem_pessoa_para_ser_atendida - 1;
       }
       else
       {
         inicia_atendimento(atendimentos, &tam_at, fila);
         printf("\nPRÓXIMO ATENDIMENTO - SENHA %d\nServiço: %c\nMesa: %d\n", atendimentos[tam_at - 1].senha, atendimentos[tam_at - 1].tipo_atendimento, atendimentos[tam_at - 1].mesa);
         fecha_atendimento(fila, &tam_fila);
-        tem_pessoa_para_ser_atendida--;
+        tem_pessoa_para_ser_atendida = tem_pessoa_para_ser_atendida - 1;
+
       }
     }
+
+    if (op == '4')
+    {
+      printf("\n1 - Cidadãos Cadastrados\n2 - Senhas não atendidas\n3 - Atendimentos Realizados\n0 - Voltar\n");
+      scanf(" %c", &op_rel);
+      switch (op_rel)
+      {
+      case '1':
+        escreverCidadaosNoArquivo(cidadaos, tam_cid);
+        break;
+      case '2':
+          escreverSenhasNaoAtendidas(fila_p, fila, tam_fila, tam_fila_p);
+        break;
+      case '3':
+        escreveAtendimentosRealizadosNoArquivo(atendimentos, tam_at, cidadaos, &tam_cid);
+        break;
+      default:
+        break;
+      }
+    }
+
     if (op == 's')
     {
       if (tem_pessoa_para_ser_atendida == 0)
       {
-        lista_atendimento_fechados(atendimentos, tam_at, cidadaos, &tam_cid);
+        escreverSenhasNaoAtendidas(fila_p, fila, tam_fila, tam_fila_p);
+        printf("\nTchau Tchau.\n");
         break;
       }
       else
       {
-        printf("\nAinda há %d pessoas para serem atendidas.\n", senhas);
+        printf("\nAinda há %d pessoas para serem atendidas.\n", tem_pessoa_para_ser_atendida);
       }
     }
   } while (op != 's' || tem_pessoa_para_ser_atendida > 0);
