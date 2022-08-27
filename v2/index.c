@@ -244,6 +244,8 @@ int main(void) {
                 }
                 break;
             case '4':
+                /* Remover */ 
+                removeCidadao(cidadaos, &tam_cid);
                 break;
             case '0':
                 break;
