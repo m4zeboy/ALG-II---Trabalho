@@ -1,19 +1,23 @@
 #include <stdio.h>
+#include <string.h>
+
 
 typedef struct {
-  int id;
-  char nome[30];
-  int idade;
-  char UF[3];
+  int id, idade;
+  char nome[30], UF[3];
 } cidadao;
 
 typedef struct
 {
-  int id_cid;
-  char servico_solicitado;
-  int senha;
-  char prioridade[20];
+  int id_cid, senha;
+  char servico_solicitado, prioridade[20];
 } solicitacao_de_atendimento;
+
+typedef struct
+{
+  int id_cid, mesa, senha;
+  char servidor[30], prioridade[20], servico_solicitado;
+} atendimento;
 
 /* menus */
     void menu_pinricpal(char *op) {
@@ -210,7 +214,7 @@ typedef struct
 
 /* senha */
 
-void gerarSenha(cidadao cidadaos[], int *tam_cid, solicitacao_de_atendimento fila[], int *tam_fila, solicitacao_de_atendimento fila_preferencial[], int *tam_fila_preferencial) {
+void gerarSenha(cidadao cidadaos[], int *tam_cid, solicitacao_de_atendimento fila[], int *tam_fila, solicitacao_de_atendimento fila_preferencial[], int *tam_fila_preferencial, int *senhas_na_fila) {
     solicitacao_de_atendimento s_at;
     cidadao c;
     int indice,id;
@@ -227,12 +231,14 @@ void gerarSenha(cidadao cidadaos[], int *tam_cid, solicitacao_de_atendimento fil
             s_at.senha = *tam_fila_preferencial;
             fila_preferencial[*tam_fila_preferencial] = s_at;;
             (*tam_fila_preferencial)++;
+            (*senhas_na_fila)++;
         } else {
             /* colocar na fila não preferencial */
             sprintf(s_at.prioridade, "NÃO PREFERENCIAL");
             s_at.senha = *tam_fila;
             fila[*tam_fila] = s_at;
             (*tam_fila)++;
+            (*senhas_na_fila)++;
         }
 
     } else {
@@ -242,7 +248,7 @@ void gerarSenha(cidadao cidadaos[], int *tam_cid, solicitacao_de_atendimento fil
 }
 
 void escreverSenha(FILE *stream, solicitacao_de_atendimento senha) {
-    fprintf(stream, "%d;%s;%d;%c\n", senha.id_cid, senha.prioridade, senha.senha, senha.servico_solicitado);
+    fprintf(stream, "ID_CID: %d;PRIORIDADE: %s;SENHA: %d;SERVIÇO SOLICITADO: %c\n", senha.id_cid, senha.prioridade, senha.senha, senha.servico_solicitado);
 }
 void escreverFila(FILE *stream, solicitacao_de_atendimento fila[], int tam_fila) {
     int i;
@@ -254,13 +260,46 @@ void escreverFila(FILE *stream, solicitacao_de_atendimento fila[], int tam_fila)
 
 /* senha */
 
+/* atendimento ao cidadao */
+atendimento iniciarAtendimento() {
+    atendimento at;
+    printf("Servidor: ");
+    scanf(" %[^\n]", at.servidor);
+    printf("Mesa: ");
+    scanf("%d",  &at.mesa);
+    return at;
+}
 
+atendimento definirProximaSenha(solicitacao_de_atendimento fila[], int tam_fila, solicitacao_de_atendimento fila_preferencial[], int tam_fila_preferencial, atendimento at) {
+    if(tam_fila_preferencial > 0) {
+        /* atender o primeiro cidadao da fila preferencial*/
+        at.id_cid = fila_preferencial[0].id_cid;
+        at.senha = fila_preferencial[0].senha;
+        strcpy(at.prioridade, fila_preferencial[0].prioridade);
+        at.servico_solicitado = fila_preferencial[0].servico_solicitado;
+    } else {
+        /* atender o primeiro cidadao da fila */
+        at.id_cid = fila[0].id_cid;
+        at.senha = fila[0].senha;
+        strcpy(at.prioridade, fila[0].prioridade);
+        at.servico_solicitado = fila[0].servico_solicitado;
+    }
+    return at;
+}
+
+void chamarProximaSenha(atendimento at) {
+    printf("\nPróxima senha a ser atendida: %d\n", at.senha);
+    printf("\nTipo de sertviço: %c\tMesa: %d\n", at.servico_solicitado, at.mesa);
+
+}
+/* atendimento ao cidadao */
 int main(void) {
     cidadao cidadaos[500];
     int tam_cid, indice_cid, id, tam_fila, tam_fila_preferencial;
     char op, op_cid, op_at_cid;
     int senhas_na_fila;
     solicitacao_de_atendimento fila[100], fila_preferencial[100];
+    atendimento at;
     FILE *arq;
 
     tam_cid = 0;
@@ -322,23 +361,15 @@ int main(void) {
         }
 
         if(op ==  '2') {
-            gerarSenha(cidadaos, &tam_cid, fila, &tam_fila, fila_preferencial,&tam_fila_preferencial);
-            /* escrever fila preferencial no arquivo*/
-            arq = fopen("fila_preferencial.csv", "w");
-            if(arq == NULL) {
-                printf("Não foi possível abrir o arquivo fila_preferencial.csv.\n");
-            } else {
-                escreverFila(arq, fila_preferencial, tam_fila_preferencial);
-                fclose(arq);
-            }
-            /* escrever fila no arquivo*/
-            arq = fopen("fila.csv", "w");
-            if(arq == NULL) {
-                printf("Não foi possível abrir o arquivo fila.csv.\n");
-            } else {
-                escreverFila(arq, fila, tam_fila);
-                fclose(arq);
-            }
+            if((tam_fila + tam_fila_preferencial) <= 100) {
+                gerarSenha(cidadaos, &tam_cid, fila, &tam_fila, fila_preferencial,&tam_fila_preferencial, &senhas_na_fila);            
+            } else
+                printf("Hoje já atingiu 100 solicitações de atendimento.");
+        }
+
+        if(op == '3') {
+            /* realizar atendimento */
+            at = iniciarAtendimento();
         }
 
         /* saída */
