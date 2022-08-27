@@ -7,11 +7,24 @@ typedef struct {
   char UF[3];
 } cidadao;
 
+/* menu principal */
+void menu_pinricpal(char *op) {
+    printf("\nAtendimento ao Cidadão\n");
+    printf("----------------------\n");
+    printf("1 - Cidadão\n");
+    printf("2 - Gerar Senha\n");
+    printf("3 - Atendimento\n");
+    printf("S - Sair\n");
+    scanf(" %c", op);
+}
+/* menu principal */
+
 /* cidadão */
 
 void lerCidadaosDoArquivo(cidadao cidadaos[], int *tam_cid) {
     int i;
-    FILE *arq = fopen("cidadaos.txt", "r");
+    FILE *arq;
+    arq = fopen("cidadaos.csv", "r");
     if(arq == NULL) {
         printf("Não foi possível abrir o arquivo cidadãos.txt\n");
     } else {
@@ -19,8 +32,8 @@ void lerCidadaosDoArquivo(cidadao cidadaos[], int *tam_cid) {
         for(i=0;i < *tam_cid;i++) {
            fscanf(arq, "%d;%[^;];%d;%s\n", &cidadaos[i].id, cidadaos[i].nome, &cidadaos[i].idade, cidadaos[i].UF);
         }
+        fclose(arq);
     }
-    fclose(arq);
 }
 
 void escreveCidadao(FILE *stream, cidadao c) {
@@ -81,6 +94,7 @@ int removeCidadao(cidadao cidadaos[], int *tam_cid) {
             troca_cidadao(&cidadaos[i], &cidadaos[i + 1]);
         }
         *tam_cid = *tam_cid - 1;
+        printf("Cidadão Removido\n");
         return 0;
     } else {
         printf("Cidadão não encontrado ou removido.\n");
@@ -92,17 +106,31 @@ int removeCidadao(cidadao cidadaos[], int *tam_cid) {
 
 
 int main(void) {
-    cidadao cidadaos[500], c;
+    cidadao cidadaos[500];
     int tam_cid;
-    FILE *arq;
+    char op;
+    int senhas_na_fila;
+
+    tam_cid = 0;
+    senhas_na_fila = 1;
+
     lerCidadaosDoArquivo(cidadaos, &tam_cid);
-    c = leCidadao();
-    salvaCidadao(cidadaos, &tam_cid, c);
-    arq = fopen("cidadaos.txt", "w");
-    if(arq != NULL) {
-        escreveVetorCidadaos(arq, cidadaos, tam_cid);
-    }
-    fclose(arq);
+    
+    do {
+        menu_pinricpal(&op);
+        if(op=='s' || op == 'S') {
+            if(senhas_na_fila > 0) {
+                printf("\nAinda tem pessoas na fila para serem atendidas.\n");
+
+            } else {
+                printf("\nTchau Tchau...\n");
+                break;
+            }
+        }
+
+    } while(op != 's' || senhas_na_fila > 0);
+        
+
     return 0;
 }
 
