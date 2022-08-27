@@ -290,6 +290,8 @@ void imprime_atendimento(atendimento at, char nome[30])
 void lista_atendimento_fechados(atendimento atendimentos[], int tam, cidadao cidadaos[], int *tam_cid)
 {
   int i, indice_cidadao;
+  ordena_pela_senha(atendimentos, tam);
+  
   printf("\nAtendimentos Realizados\n");
   printf("DOCUMENTOS: \n");
   for (i = 0; i < tam; i++)
@@ -316,6 +318,24 @@ void lista_atendimento_fechados(atendimento atendimentos[], int tam, cidadao cid
     if (atendimentos[i].tipo_atendimento == 'M')
     {
       imprime_atendimento(atendimentos[i], cidadaos[indice_cidadao].nome);
+    }
+  }
+}
+
+void troca_atendimento(atendimento *a, atendimento *b) {
+  atendimento aux;
+  aux = *a;
+  *a = *b;
+  *b = aux;
+}
+
+void ordena_pela_senha(atendimento atendimentos[], int tam) {
+  int i,j;
+  for(i=0; i<tam;i++) {
+    for(j=i+1;j<tam-1;j++) {
+      if(atendimentos[i].senha > atendimentos[j].senha) {
+        troca_atendimento(&atendimentos[i], &atendimentos[j]);
+      }
     }
   }
 }
