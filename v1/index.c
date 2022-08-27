@@ -428,11 +428,6 @@ void lista_atendimento_fechados(atendimento atendimentos[], int tam, cidadao cid
 {
   int i, indice_cidadao;
   ordena_pela_senha(atendimentos, tam);
-<<<<<<< HEAD:v1/index.c
-  
-=======
-
->>>>>>> 9947bd2a0a747342eec4ee4c86196e4cf433fb8b:index.c
   printf("\nAtendimentos Realizados\n");
   printf("DOCUMENTOS: \n");
   for (i = 0; i < tam; i++)
