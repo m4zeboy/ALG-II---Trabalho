@@ -7,7 +7,7 @@ typedef struct {
   char UF[3];
 } cidadao;
 
-/* menu principal */
+/* menus */
 void menu_pinricpal(char *op) {
     printf("\nAtendimento ao Cidadão\n");
     printf("----------------------\n");
@@ -17,9 +17,29 @@ void menu_pinricpal(char *op) {
     printf("S - Sair\n");
     scanf(" %c", op);
 }
-/* menu principal */
+
+void menu_cidadao(char *op_cid) {
+    printf("\nCidadão\n");
+    printf("----------------------\n");
+    printf("1 - Cadastrar Cidadao\n");
+    printf("2 - Pesquisar por código\n");
+    printf("3 - Alterar informação\n");
+    printf("4 - Remover\n");
+    printf("0 - Voltar\n");
+    scanf(" %c", op_cid);
+}
+/* menus */
 
 /* cidadão */
+int pesquisaCidadaoPorID(cidadao cidadaos[], int *tam_cid, int id) {
+    int i, indice;
+    indice=-1;
+    for(i=0;i< *tam_cid;i++) {
+        if(cidadaos[i].id == id)
+            indice=i;
+    }
+    return indice;
+}
 
 void lerCidadaosDoArquivo(cidadao cidadaos[], int *tam_cid) {
     int i;
@@ -57,24 +77,22 @@ cidadao leCidadao() {
     printf("UF: ");
     scanf("%s", c.UF);
     return c;
+   
 }
 
-void salvaCidadao(cidadao cidadaos[], int *tam_cid, cidadao c) {
-    c.id = *tam_cid + 1;
-    cidadaos[*tam_cid] = c;
-    *tam_cid = *tam_cid + 1;
-}
-
-int pesquisaCidadaoPorID(cidadao cidadaos[], int *tam_cid) {
-    int i, indice, id;
-    indice=-1;
+void salvaCidadao(cidadao cidadaos[], int *tam_cid) {
+    int id;
+    cidadao c;
     printf("ID: ");
     scanf("%d", &id);
-    for(i=0;i< *tam_cid;i++) {
-        if(cidadaos[i].id == id)
-            indice=i;
+    if(pesquisaCidadaoPorID(cidadaos, tam_cid, id) != -1) {
+        printf("\nCidadão já cadastrado com esse mesmo ID. Por favor tente outro.\n");
+    } else {
+        c = leCidadao();
+        c.id = id;
+        cidadaos[*tam_cid] = c;
+        *tam_cid = *tam_cid + 1;
     }
-    return indice;
 }
 
 void troca_cidadao(cidadao *a, cidadao *b) {
@@ -85,10 +103,11 @@ void troca_cidadao(cidadao *a, cidadao *b) {
 }
 
 int removeCidadao(cidadao cidadaos[], int *tam_cid) {
-    int i;
+    int i, id;
     int indice;
     printf("ID: ");
-    indice = pesquisaCidadaoPorID(cidadaos, tam_cid);
+    scanf("%d", &id);
+    indice = pesquisaCidadaoPorID(cidadaos, tam_cid, id);
     if(indice != -1) {
         for (i = indice; i - 1 < *tam_cid; i++) {
             troca_cidadao(&cidadaos[i], &cidadaos[i + 1]);
@@ -104,30 +123,72 @@ int removeCidadao(cidadao cidadaos[], int *tam_cid) {
 
 /* cidadão */
 
-
 int main(void) {
-    cidadao cidadaos[500];
-    int tam_cid;
-    char op;
+    cidadao cidadaos[500], c;
+    int tam_cid, indice_cid, id;
+    char op, op_cid;
     int senhas_na_fila;
+    FILE *arq;
 
     tam_cid = 0;
-    senhas_na_fila = 1;
+    senhas_na_fila = 0;
 
     lerCidadaosDoArquivo(cidadaos, &tam_cid);
     
     do {
         menu_pinricpal(&op);
+
+        if(op == '1') {
+            menu_cidadao(&op_cid);
+            switch (op_cid){
+            case '1':
+                /* cadasatrar cidadao */
+                salvaCidadao(cidadaos, &tam_cid);
+                /* cadasatrar cidadao */
+                break;
+            case '2':
+                /* Pesquisar por ID*/
+                printf("ID: " );
+                scanf("%d", &id);
+                indice_cid = pesquisaCidadaoPorID(cidadaos, &tam_cid, id);
+                if(indice_cid == -1) {
+                    printf("\nUsuário não cadastrado ou excluído.\n");
+                } else {
+                    printf("\n");
+                    escreveCidadao(stdout, cidadaos[indice_cid]);
+                }
+                /* Pesquisar por ID*/
+
+                break;
+            case '3':
+                break;
+            case '4':
+                break;
+            case '0':
+                break;
+            }
+        }
+
+        /* saída */
         if(op=='s' || op == 'S') {
             if(senhas_na_fila > 0) {
                 printf("\nAinda tem pessoas na fila para serem atendidas.\n");
 
             } else {
                 printf("\nTchau Tchau...\n");
+                arq = fopen("cidadaos.csv", "w");
+                if(arq == NULL)
+                    printf("\nNão foi possível abrir o arquivo cidadaos.csv.\n");
+                else {
+                    escreveVetorCidadaos(arq, cidadaos, tam_cid);
+                    fclose(arq);
+                } 
+
                 break;
             }
         }
-
+        /* saída */
+        
     } while(op != 's' || senhas_na_fila > 0);
         
 
