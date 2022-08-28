@@ -6,8 +6,6 @@
     Procurei deixar as funções mais específicas do que as funções da versão anterior, agora o fluxo de atendimento está melhor dividido em várias funções menores.
     Essa divisão se fez necessária pois me deparei com muitas funções recebendo muitos parâmetros, então tentei deixar a função menor, e receber o mínimo de parâmetros.
 
-    Como tem duas filas, e as senhas são numeros que incrementam, pode ocorrer de existir duas senhas com o mesmo número, mas não se tratam da mesma senha, ex senha 1, tem a senha 1 preferencial e a senha 1 não preferencial, que será a primeira a ser atendida após o término das preferenciais.
-
 */
 
 typedef struct {
@@ -360,7 +358,7 @@ typedef struct {
 
 int main(void) {
     cidadao cidadaos[500];
-    int tam_cid, indice_cid, id, tam_fila, tam_fila_preferencial, tam_at_rlzd;
+    int tam_cid, indice_cid, id, tam_fila, tam_fila_preferencial, tam_at_rlzd, i;
     char op, op_cid, op_at_cid, op_rel;
     int senhas_na_fila;
     solicitacao_de_atendimento fila[100], fila_preferencial[100], s_at;
@@ -491,16 +489,49 @@ int main(void) {
                 /* atendimentos realizados */
                 ordenarAtendimento(atendimentos_realizados, tam_at_rlzd);
                 /*DOCUMENTOS*/
-                escreverAtendimentosNoArquivo("documentos.csv", 'D', atendimentos_realizados, tam_at_rlzd);
+                arq = fopen("documentos.csv", "w");
+                if(arq == NULL) {
+                    printf("Não foi possível abrir o arquivo documentos.csv");
+                } else {
+                    /*procurar apenas os atendimentos realizados pelo serviço de DOCUMENTOS*/
+                    for(i=0;i<tam_at_rlzd;i++) {
+                        if(atendimentos_realizados[i].servico_solicitado == 'D') {
+                            escreverAtendimento(arq, atendimentos_realizados[i]);
+                        }
+                    }     
+                    fclose(arq);
+                }
                 /*DOCUMENTOS*/
                 
                 /*TRANSPORTE*/
-                escreverAtendimentosNoArquivo("transporte.csv", 'T', atendimentos_realizados, tam_at_rlzd);
+                arq = fopen("transporte.csv", "w");
+                if(arq == NULL) {
+                    printf("Não foi possível abrir o arquivo transporte.csv");
+                } else {
+                    /*procurar apenas os atendimentos realizados pelo serviço de TRANSPORTE*/
+                    for(i=0;i<tam_at_rlzd;i++) {
+                        if(atendimentos_realizados[i].servico_solicitado == 'T') {
+                            escreverAtendimento(arq, atendimentos_realizados[i]);
+                        }
+                    }     
+                    fclose(arq);
+                }
                 /*TRANSPORTE*/
 
-                /* MORADIA */
-                escreverAtendimentosNoArquivo("moradia.csv", 'M', atendimentos_realizados, tam_at_rlzd);
-                /* MORADIA */
+                /*TRANSPORTE*/
+                arq = fopen("moradia.csv", "w");
+                if(arq == NULL) {
+                    printf("Não foi possível abrir o arquivo transporte.csv");
+                } else {
+                    /*procurar apenas os atendimentos realizados pelo serviço de TRANSPORTE*/
+                    for(i=0;i<tam_at_rlzd;i++) {
+                        if(atendimentos_realizados[i].servico_solicitado == 'M') {
+                            escreverAtendimento(arq, atendimentos_realizados[i]);
+                        }
+                    }     
+                    fclose(arq);
+                }
+                /*TRANSPORTE*/
                 
             
             default:
