@@ -219,13 +219,32 @@ typedef struct {
 /* senha */
     void lerSolicitacaoDeAtendimento(solicitacao_de_atendimento *s_at, cidadao cidadaos[], int *tam_cid) {
         int id, indice;
+        char servico_solicitado;
         printf("ID: ");
         scanf("%d", &id);
         indice = pesquisaCidadaoPorID(cidadaos, tam_cid, id);
         if(indice != -1) {
-            s_at->id_cid = cidadaos[indice].id;
-            printf("Serviço solicitado: ");
-            scanf(" %c", &s_at->servico_solicitado);
+            
+            printf("Serviço solicitado:\nD - Documentos\nT - Transporte\nM - Moradia\n");
+            scanf(" %c", &servico_solicitado);
+            switch (servico_solicitado)
+            {
+            case 'D':
+                s_at->id_cid = cidadaos[indice].id;
+                s_at->servico_solicitado = 'D';
+                break;
+            case 'T':
+                s_at->id_cid = cidadaos[indice].id;
+                s_at->servico_solicitado = 'T';
+            break;
+            case 'M':
+                s_at->id_cid = cidadaos[indice].id;
+                s_at->servico_solicitado = 'M';
+            break;
+            default:
+                printf("Serviço solicitado inválido. por favor digite D para Documentos ou T para Transporte ou M para Moradia\n");
+                break;
+            }
         } else {
             printf("Cidadão não encontrado ou removido.\n");
         }
