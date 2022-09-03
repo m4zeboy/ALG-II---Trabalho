@@ -459,7 +459,7 @@ int main(void) {
                     senhas_na_fila++;
                 }
             } else
-                printf("Hoje já atingiu 100 solicitações de atendimento.");
+                printf("\nHoje já atingiu 100 solicitações de atendimento.\n");
         }
 
         if(op == '3') {
@@ -488,38 +488,54 @@ int main(void) {
             {
             case '1':
                 /* cidadaos cadastrados */
-                arq = fopen("cidadaos.csv", "w");
-                if(arq == NULL) {
-                    printf("Não foi possível abrir o arquivo cidadaos.csv");
+                if(tam_cid > 0) {
+                    arq = fopen("cidadaos.csv", "w");
+                    if(arq == NULL) {
+                        printf("Não foi possível abrir o arquivo cidadaos.csv");
+                    } else {
+                        escreveVetorCidadaos(arq, cidadaos, tam_cid);
+                        fclose(arq);
+                    }
                 } else {
-                    escreveVetorCidadaos(arq, cidadaos, tam_cid);
-                    fclose(arq);
+                    printf("\nNão há cidadãos para serem inclusos no relátorio.\n");
                 }
                 break;
             case '2':
                 /* senhas nao atendidas*/
-                arq = fopen("proximas.csv", "w");
-                if(arq == NULL) {
-                    printf("Não foi possível abrir o arquivo proximas.csv");
+                if(senhas_na_fila > 0) {
+                    arq = fopen("proximas.csv", "w");
+                    if(arq == NULL) {
+                        printf("Não foi possível abrir o arquivo proximas.csv");
+                    } else {
+                        escreverFila(arq, fila, tam_fila, fila_preferencial, tam_fila_preferencial);
+                        fclose(arq);
+                    }
                 } else {
-                    escreverFila(arq, fila, tam_fila, fila_preferencial, tam_fila_preferencial);
-                    fclose(arq);
+                    printf("\nNão há próximas senhas na fila.\n");
                 }
+                
+                
                 break;
             case '3':
                 /* atendimentos realizados */
-                ordenarAtendimento(atendimentos_realizados, tam_at_rlzd);
-                /*DOCUMENTOS*/
-                escreverAtendimentosNoArquivo("documentos.csv", 'D', atendimentos_realizados, tam_at_rlzd);
-                /*DOCUMENTOS*/
-                
-                /*TRANSPORTE*/
-                escreverAtendimentosNoArquivo("transporte.csv", 'T', atendimentos_realizados, tam_at_rlzd);
-                /*TRANSPORTE*/
+                if(tam_at_rlzd > 0) {
 
-                /* MORADIA */
-                escreverAtendimentosNoArquivo("moradia.csv", 'M', atendimentos_realizados, tam_at_rlzd);
-                /* MORADIA */
+                ordenarAtendimento(atendimentos_realizados, tam_at_rlzd);
+                    /*DOCUMENTOS*/
+                    escreverAtendimentosNoArquivo("documentos.csv", 'D', atendimentos_realizados, tam_at_rlzd);
+                    /*DOCUMENTOS*/
+                    
+                    /*TRANSPORTE*/
+                    escreverAtendimentosNoArquivo("transporte.csv", 'T', atendimentos_realizados, tam_at_rlzd);
+                    /*TRANSPORTE*/
+
+                    /* MORADIA */
+                    escreverAtendimentosNoArquivo("moradia.csv", 'M', atendimentos_realizados, tam_at_rlzd);
+                    /* MORADIA */
+                } else {
+                    printf("\nNão há atendimentos realizados ainda para relatar.\n");
+
+                }
                 
             
             default:
