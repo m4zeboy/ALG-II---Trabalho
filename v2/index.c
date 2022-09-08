@@ -8,6 +8,7 @@
 
     Como tem duas filas, e as senhas são numeros que incrementam, pode ocorrer de existir duas senhas com o mesmo número, mas não se tratam da mesma senha, ex senha 1, tem a senha 1 preferencial e a senha 1 não preferencial, que será a primeira a ser atendida após o término das preferenciais.
 
+    Ao iniciar o programa, ele carrega os cidadãos cadastrados pelo arquivo de cidadãos, se for a primeira execução ele apenas mostrará que nao foi possível carregar o arquivo, nas próximas execuções ele já carrega o arquivo pois esse arquivo é gerado toda vez que o programa é encerrado.
 */
 
 typedef struct {
