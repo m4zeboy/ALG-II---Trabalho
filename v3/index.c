@@ -10,6 +10,8 @@ int main(void) {
   int contadorDeSenhas;
   Senha *senhaTemp, senhaDados, *fila, *filaP;
   lista=NULL;
+  fila=NULL;
+  filaP=NULL;
   carregaCidadaos(&lista);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
@@ -134,9 +136,32 @@ int main(void) {
         printf("Informe o servico requisitado: ");
         scanf(" %s", senhaDados.servico);
         /* verificar em qual fila colocar */
+        if(temp->idade >= 65) {
+          printf("FILA PREFERENCIAL\n");
+          enfileirar(&filaP, senhaDados);
+        } else {
+          printf("FILA NAO PREFERENCIAL\n");
+          enfileirar(&fila, senhaDados);
+        }
       } else {
         fprintf(stderr, "Cidadao nao encontrado.\n");
       }
+    }
+  
+    if(op == '4') {
+      /* relatorios */
+      /*senhaTemp = filaP;
+      while(senhaTemp) {
+        temp = buscaCidadao(lista, senhaTemp->codigoCidadao);
+        printf("numero: %d nome do cidadao: %s tipo de servico: %s pref: SIM\n", senhaTemp->chave, temp->nome, senhaTemp->servico);
+        senhaTemp = senhaTemp->prox;
+      }
+      senhaTemp = fila;
+      while(senhaTemp) {
+        temp = buscaCidadao(lista, senhaTemp->codigoCidadao);
+        printf("numero: %d nome do cidadao: %s tipo de servico: %s pref: NAO\n", senhaTemp->chave, temp->nome, senhaTemp->servico);
+        senhaTemp = senhaTemp->prox;
+      }*/
     }
   } while(op != 's' && op != 'S');
   salvarCidadaos(lista);
