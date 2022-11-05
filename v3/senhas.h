@@ -27,3 +27,22 @@ void salvarContadorDeSenhas(int contadorDeSenhas) {
     printf("Falaha ao abrir o arquivo 'contadorDeSenhas.data'.\n");
   }
 }
+
+void gerarSenha(int *contadorDeSenhas) {
+  *contadorDeSenhas++;
+}
+
+void enfileirar(Senha **fila, Senha dados) {
+  Senha *nova;
+  nova = (Senha *) malloc(sizeof(Senha));
+  if(nova) {
+    /* copiar os dados para o nova */
+    nova->chave = dados.chave;
+    nova->codigoCidadao = dados.codigoCidadao;
+    strcpy(nova->servico, dados.servico);
+    nova->prox = *fila;
+    *fila = nova;
+  } else {
+    fprintf(stderr, "Erro ao alocar memória.\n");
+  }
+}

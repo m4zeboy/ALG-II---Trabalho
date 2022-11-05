@@ -8,6 +8,7 @@ int main(void) {
   Cidadao *lista, dados, *temp;
   char op,  op_sub, op_at;
   int contadorDeSenhas;
+  Senha *senhaTemp, senhaDados, *fila, *filaP;
   lista=NULL;
   carregaCidadaos(&lista);
   carregarContadorDeSenhas(&contadorDeSenhas);
@@ -25,7 +26,7 @@ int main(void) {
             printf("Codigo: ");
             scanf("%d", &(dados.codigo));
             if(buscaCidadao(lista, dados.codigo) != NULL) {
-              printf("Cidadao ja cadastrado com esse codigo.\n");
+              fprintf(stderr, "Cidadao ja cadastrado com esse codigo.\n");
             } else {
               /* cadastrar cidadão novo*/
               printf("Nome: ");
@@ -53,7 +54,7 @@ int main(void) {
               temp->estado
             );
             } else {
-              printf("Cidadao nao encontrado.\n");
+              fprintf(stderr, "Cidadao nao encontrado.\n");
             }
             break;
           case '3':
@@ -87,7 +88,7 @@ int main(void) {
                     temp->idade = dados.idade;
                     printf("Idadae atualizada com sucesso.\n");
                   } else {
-                    printf("Cidadao nao encontrado.\n");
+                    fprintf(stderr, "Cidadao nao encontrado.\n");
                   }
                 break;   
                 case '3':
@@ -101,7 +102,7 @@ int main(void) {
                     strcpy(temp->estado, dados.estado);
                     printf("Estado atualizado com sucesso.\n");
                   } else {
-                    printf("Cidadao nao encontrado.\n");
+                    fprintf(stderr, "Cidadao nao encontrado.\n");
                   }
                 break;             
                 default:
@@ -123,7 +124,19 @@ int main(void) {
     }
 
     if(op == '2') {
-
+      printf("Codigo: ");
+      scanf("%d", &(dados.codigo));
+      temp = buscaCidadao(lista, dados.codigo);
+      if(temp) {
+        gerarSenha(&contadorDeSenhas);
+        senhaDados.chave = contadorDeSenhas;
+        senhaDados.codigoCidadao = dados.codigo;
+        printf("Informe o servico requisitado: ");
+        scanf(" %s", senhaDados.servico);
+        /* verificar em qual fila colocar */
+      } else {
+        fprintf(stderr, "Cidadao nao encontrado.\n");
+      }
     }
   } while(op != 's' && op != 'S');
   salvarCidadaos(lista);

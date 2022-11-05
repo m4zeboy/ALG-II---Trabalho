@@ -31,6 +31,8 @@ void insereCidadaoEmOrdem(Cidadao **lista, Cidadao dados) {
     } else {
       p->prox = nova;
     }
+  } else {
+    fprintf(stderr, "Erro ao alocar memória.\n");
   }
 }
 
