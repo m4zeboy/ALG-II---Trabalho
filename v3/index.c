@@ -2,12 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cidadaos.h"
+#include "senhas.h"
 
 int main(void) {
   Cidadao *lista, dados, *temp;
   char op,  op_sub, op_at;
+  int contadorDeSenhas;
   lista=NULL;
   carregaCidadaos(&lista);
+  carregarContadorDeSenhas(&contadorDeSenhas);
   do {
     printf("1 CIDADAO\n2 GERAR SENHA\n3 ATENDIMENTO AO CIDADAO\n4 RELATORIOS\nS SAIR\n");
     scanf(" %c", &op);
@@ -119,7 +122,11 @@ int main(void) {
       } while(op_sub != '0');
     }
 
+    if(op == '2') {
+
+    }
   } while(op != 's' && op != 'S');
   salvarCidadaos(lista);
+  salvarContadorDeSenhas(contadorDeSenhas);
   return 0;
 }
