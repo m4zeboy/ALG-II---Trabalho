@@ -28,6 +28,8 @@ void enfileirar(Senha **fila, Senha dados) {
     fprintf(stderr, "Erro ao alocar memória.\n");
   }
 }
+
+
 void carregarContadorDeSenhas(int *contadorDeSenhas) {
   FILE *arq;
   int status;
@@ -56,3 +58,9 @@ void gerarSenha(int *contadorDeSenhas) {
   *contadorDeSenhas = (*contadorDeSenhas) + 1;
 }
 
+void mostrarFila(Senha *fila) {
+  if(fila) {
+    printf("chave: %d; servico: %s\n", fila->chave, fila->servico);
+    mostrarFila(fila->prox);
+  }
+}

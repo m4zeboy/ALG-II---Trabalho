@@ -99,7 +99,7 @@ void salvarCidadaos(Cidadao *lista) {
     }
     fclose(arq);
   } else {
-    printf("Não foi possível abrir o arquivo cidadaos.data.\n");
+    fprintf(stderr,"Não foi possível abrir o arquivo cidadaos.data.\n");
   } 
 }
 
@@ -122,5 +122,19 @@ void excluiCadastro(Cidadao **lista, int codigo) {
     printf("Cadastro excluido com sucesso.\n");
   } else {
     printf("Cidadao não encontrado.\n");
+  }
+}
+
+void cidadaosCadastrados(Cidadao *lista) {
+  FILE *arq;
+  arq = fopen("cidadaos.csv", "w");
+  if(arq) {
+    while(lista) {
+      fprintf(arq,"%d;%s;%d;%s\n", lista->codigo, lista->nome, lista->idade, lista->estado);
+      lista = lista->prox;
+    }
+    fclose(arq);
+  } else {
+    fprintf(stderr, "Não foi possível abrir o arquivo cidadaos.csv.\n");
   }
 }

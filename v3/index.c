@@ -149,19 +149,27 @@ int main(void) {
     }
   
     if(op == '4') {
+      do {
+
+        printf("1 CIDADAOS CADASTRADOS\n2 CIDADAOS NAO ATENDIDOS\n3 ATENDIMENTOS REALIZADOS\n0 VOLTAR");
+        scanf(" %c", &op_sub);
+        switch (op_sub)
+        {
+        case '1':
+          cidadaosCadastrados(lista);
+          printf("Confira o arquivo 'cidadaos.csv'.\n");
+          break;
+        
+        default:
+          if(op_sub != 0) {
+            fprintf(stderr, "Opção invalida.\n");
+          }
+          break;
+        }
+      } while(op_sub != '0');
       /* relatorios */
-      /*senhaTemp = filaP;
-      while(senhaTemp) {
-        temp = buscaCidadao(lista, senhaTemp->codigoCidadao);
-        printf("numero: %d nome do cidadao: %s tipo de servico: %s pref: SIM\n", senhaTemp->chave, temp->nome, senhaTemp->servico);
-        senhaTemp = senhaTemp->prox;
-      }
-      senhaTemp = fila;
-      while(senhaTemp) {
-        temp = buscaCidadao(lista, senhaTemp->codigoCidadao);
-        printf("numero: %d nome do cidadao: %s tipo de servico: %s pref: NAO\n", senhaTemp->chave, temp->nome, senhaTemp->servico);
-        senhaTemp = senhaTemp->prox;
-      }*/
+      mostrarFila(filaP);
+      mostrarFila(fila);
     }
   } while(op != 's' && op != 'S');
   salvarCidadaos(lista);
