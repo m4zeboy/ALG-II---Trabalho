@@ -120,6 +120,9 @@ int main(void) {
             excluiCadastro(&lista, dados.codigo);
             break;
           default:
+            if(op_sub != '0') {
+              printf("Opção Inválida\n");
+            }
             break;
         }
       } while(op_sub != '0');
@@ -156,10 +159,13 @@ int main(void) {
         switch (op_sub)
         {
         case '1':
+        /* RELATORIO DE CIDADAOS CADASTRADOS */
           cidadaosCadastrados(lista);
           printf("Confira o arquivo 'cidadaos.csv'.\n");
           break;
-        
+        case '2':
+          
+          break;
         default:
           if(op_sub != 0) {
             fprintf(stderr, "Opção invalida.\n");
