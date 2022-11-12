@@ -8,7 +8,9 @@ int main(void) {
   Cidadao *lista, dados, *temp;
   char op,  op_sub, op_at;
   int contadorDeSenhas;
-  Senha *senhaTemp, senhaDados, *fila, *filaP;
+  Senha senhaDados, *fila, *filaP, *proxima;
+  Atedimento atTemp;
+
   lista=NULL;
   fila=NULL;
   filaP=NULL;
@@ -133,7 +135,7 @@ int main(void) {
       scanf("%d", &(dados.codigo));
       temp = buscaCidadao(lista, dados.codigo);
       if(temp) {
-        gerarSenha(&contadorDeSenhas);
+        contadorDeSenhas = contadorDeSenhas + 1;
         senhaDados.chave = contadorDeSenhas;
         senhaDados.codigoCidadao = dados.codigo;
         printf("Informe o servico requisitado: ");
@@ -151,10 +153,25 @@ int main(void) {
       }
     }
   
+    if(op == '3') {
+      printf("Nome do Servidor Publico: ");
+      scanf(" %[^\n]", atTemp.servidor);
+      printf("Mesa disponível: ");
+      scanf("%d", &(atTemp.mesa));
+      if(filaP == NULL) {
+        proxima = desenfileirar(&fila);
+      } else {
+        proxima = desenfileirar(&filaP);
+      }
+      atTemp.chave = proxima->chave;
+      strcpy(atTemp.servico, proxima->servico);
+      printf("proxima senha: %d\n", proxima->chave);
+      free(proxima);
+    }
+
     if(op == '4') {
       do {
-
-        printf("1 CIDADAOS CADASTRADOS\n2 CIDADAOS NAO ATENDIDOS\n3 ATENDIMENTOS REALIZADOS\n0 VOLTAR");
+        printf("1 CIDADAOS CADASTRADOS\n2 CIDADAOS NAO ATENDIDOS\n3 ATENDIMENTOS REALIZADOS\n0 VOLTAR\n");
         scanf(" %c", &op_sub);
         switch (op_sub)
         {
@@ -164,18 +181,18 @@ int main(void) {
           printf("Confira o arquivo 'cidadaos.csv'.\n");
           break;
         case '2':
-          
+        /* RELATORIO DE CIDADAOS NAO ATENDIDOS */
+          relatorioProximos(fila, filaP, lista);
           break;
         default:
-          if(op_sub != 0) {
+          if(op_sub != '0') {
             fprintf(stderr, "Opção invalida.\n");
           }
           break;
         }
       } while(op_sub != '0');
       /* relatorios */
-      mostrarFila(filaP);
-      mostrarFila(fila);
+      
     }
   } while(op != 's' && op != 'S');
   salvarCidadaos(lista);

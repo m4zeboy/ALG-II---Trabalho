@@ -4,6 +4,12 @@ typedef struct senha {
   struct senha *prox;
 } Senha;
 
+typedef struct atedimento {
+  int codigoCidadao, chave, mesa;
+  char servico[12], servidor[30];
+  struct atedimento *prox;
+} Atedimento;
+
 void enfileirar(Senha **fila, Senha dados) {
   Senha *nova, *p, *q;
   nova = (Senha *) malloc(sizeof(Senha));
@@ -28,7 +34,6 @@ void enfileirar(Senha **fila, Senha dados) {
     fprintf(stderr, "Erro ao alocar memória.\n");
   }
 }
-
 
 void carregarContadorDeSenhas(int *contadorDeSenhas) {
   FILE *arq;
@@ -63,4 +68,49 @@ void mostrarFila(Senha *fila) {
     printf("chave: %d; servico: %s\n", fila->chave, fila->servico);
     mostrarFila(fila->prox);
   }
+}
+
+
+void relatorioProximos(Senha *fila, Senha *filaP, Cidadao *lista) {
+  FILE *arq;
+  Cidadao *temp;
+  char pref[20];
+  arq = fopen("proximos.csv", "w");
+  if(arq) {
+   while(filaP) {
+      temp = buscaCidadao(lista, filaP->codigoCidadao);
+      strcpy(pref, "PREFERENCIAL");
+      fprintf(arq, "%d;%s;%s;%s\n",
+        filaP->chave,
+        fila->servico,
+        temp->nome,
+        pref
+      );
+      filaP = filaP->prox;
+
+    }
+    while(fila) {
+      temp = buscaCidadao(lista, fila->codigoCidadao);
+      strcpy(pref, "NAO PREFERENCIAL");
+      fprintf(arq, "%d;%s;%s;%s\n",
+        fila->chave,
+        fila->servico,
+        temp->nome,
+        pref
+      );
+      fila = fila->prox;
+
+    }
+    fclose(arq);
+  } else {
+    fprintf(stderr, "Nao foi possivel abrir o arquivo: proximos.csv.\n");
+  }
+}
+
+Senha *desenfileirar(Senha **fila) {
+  /* desenfileirar o primeiro elemento */
+  Senha *remove;
+  remove = *fila;
+  *fila = (*fila)->prox;
+  return remove;
 }

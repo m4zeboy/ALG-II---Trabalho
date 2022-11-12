@@ -103,7 +103,6 @@ void salvarCidadaos(Cidadao *lista) {
   } 
 }
 
-
 void excluiCadastro(Cidadao **lista, int codigo) {
   Cidadao *p, *q;
   p = NULL; q = *lista;
