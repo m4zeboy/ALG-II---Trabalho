@@ -8,13 +8,18 @@ int main(void) {
   Cidadao *lista, dados, *temp;
   char op,  op_sub, op_at;
   int contadorDeSenhas, sair;
-  Senha senhaDados, *fila, *filaP, *proxima;
-  Atedimento atTemp;
+  Senha senhaDados, *fila, *filaP, *proxima, *stemp;
+  Atedimento atTemp, *documentos, *transporte, *moradia;
   /* sair é inicializado com zero pois, de início não tem senha na fila portanto o usuário pode sair do programa. */
   sair = 0;
   lista=NULL;
   fila=NULL;
   filaP=NULL;
+  
+  documentos = NULL;
+  transporte = NULL;
+  moradia = NULL;
+
   carregaCidadaos(&lista);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
@@ -120,7 +125,21 @@ int main(void) {
           /* excluir cadastro */
             printf("Informe o codigo do cidadao: ");
             scanf("%d", &(dados.codigo));
-            excluiCadastro(&lista, dados.codigo);
+            temp = buscaCidadao(lista, dados.codigo);
+            if(temp->idade >= 65) {
+              /* verificar se o cidadão está na fila preferencial */
+              stemp = buscaCidadaoNaFila(filaP, dados.codigo);
+            } else {
+              /* verificar se o cidadão está na fila */
+              stemp = buscaCidadaoNaFila(fila, dados.codigo);
+            }
+            if(stemp == NULL) {
+              /* Pode excluir */
+              excluiCadastro(&lista, dados.codigo);
+            } else {
+              /* Não pode excluir, o cidadao está esperando na fila. */
+              fprintf(stderr,"Nao e possivel escluir o cadastro do cidadao, porque ele esta esperando na fila.\n");
+            }
             break;
           default:
             if(op_sub != '0') {
@@ -170,6 +189,17 @@ int main(void) {
       strcpy(atTemp.servico, proxima->servico);
       printf("proxima senha: %d\n", proxima->chave);
       free(proxima);
+
+      if(strcmp(atTemp.servico, "documentos") == 0) {
+        /* salvar na lista de documentos */
+      } else if(strcmp(atTemp.servico, "moradia") == 0) {
+        /* salvar na lista de moradia */
+      } else if(strcmp(atTemp.servico, "transporte") == 0) {
+        /* salvar na lista de transporte */
+        
+      }
+
+
       sair = sair - 1;
     }
 
@@ -201,8 +231,6 @@ int main(void) {
   
     if((op == 's' || op == 'S') && sair == 0) {
       break;
-    } else {
-      printf("Ainda tem pessoas na fila.\n");
     }
 
   } while(1);

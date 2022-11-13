@@ -59,17 +59,12 @@ void salvarContadorDeSenhas(int contadorDeSenhas) {
   }
 }
 
-void gerarSenha(int *contadorDeSenhas) {
-  *contadorDeSenhas = (*contadorDeSenhas) + 1;
-}
-
 void mostrarFila(Senha *fila) {
   if(fila) {
     printf("chave: %d; servico: %s\n", fila->chave, fila->servico);
     mostrarFila(fila->prox);
   }
 }
-
 
 void relatorioProximos(Senha *fila, Senha *filaP, Cidadao *lista) {
   FILE *arq;
@@ -113,4 +108,37 @@ Senha *desenfileirar(Senha **fila) {
   remove = *fila;
   *fila = (*fila)->prox;
   return remove;
+}
+
+Senha *buscaCidadaoNaFila(Senha *fila, int codigo) {
+  if(fila == NULL)
+    return NULL;
+  if(fila->codigoCidadao == codigo)
+    return fila;
+  return buscaCidadaoNaFila(fila->prox, codigo);
+} 
+
+void copiaDadosDeAtendimento(Atedimento *nova, Atedimento dados) {
+  nova->chave = dados.chave;
+  nova->codigoCidadao = dados.codigoCidadao;
+  nova->mesa = dados.mesa;
+  strcpy(nova->servico, dados.servico);
+  strcpy(nova->servidor, dados.servidor);
+  nova->prox = NULL;
+}
+
+void registrarAtendimento(Atedimento **lista, Atedimento dados) {
+  Atedimento *nova, *p, *q;
+  nova = (Atedimento *) malloc(sizeof(Atedimento));
+  if(nova) {
+    copiaDadosDeAtendimento(nova, dados);
+    p = NULL; q = *lista;
+    while (q) {
+      p = q;
+      q = q->prox;
+    }
+    p->prox = nova;
+  } else {
+    fprintf(stderr, "Erro ao alocar memória.\n");
+  }
 }
