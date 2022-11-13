@@ -7,10 +7,11 @@
 int main(void) {
   Cidadao *lista, dados, *temp;
   char op,  op_sub, op_at;
-  int contadorDeSenhas;
+  int contadorDeSenhas, sair;
   Senha senhaDados, *fila, *filaP, *proxima;
   Atedimento atTemp;
-
+  /* sair é inicializado com zero pois, de início não tem senha na fila portanto o usuário pode sair do programa. */
+  sair = 0;
   lista=NULL;
   fila=NULL;
   filaP=NULL;
@@ -148,6 +149,8 @@ int main(void) {
           printf("FILA NAO PREFERENCIAL\n");
           enfileirar(&fila, senhaDados);
         }
+        /* sair é incrementado */
+        sair = sair + 1;
       } else {
         fprintf(stderr, "Cidadao nao encontrado.\n");
       }
@@ -156,7 +159,7 @@ int main(void) {
     if(op == '3') {
       printf("Nome do Servidor Publico: ");
       scanf(" %[^\n]", atTemp.servidor);
-      printf("Mesa disponível: ");
+      printf("Mesa disponivel: ");
       scanf("%d", &(atTemp.mesa));
       if(filaP == NULL) {
         proxima = desenfileirar(&fila);
@@ -167,6 +170,7 @@ int main(void) {
       strcpy(atTemp.servico, proxima->servico);
       printf("proxima senha: %d\n", proxima->chave);
       free(proxima);
+      sair = sair - 1;
     }
 
     if(op == '4') {
@@ -194,7 +198,14 @@ int main(void) {
       /* relatorios */
       
     }
-  } while(op != 's' && op != 'S');
+  
+    if((op == 's' || op == 'S') && sair == 0) {
+      break;
+    } else {
+      printf("Ainda tem pessoas na fila.\n");
+    }
+
+  } while(1);
   salvarCidadaos(lista);
   salvarContadorDeSenhas(contadorDeSenhas);
   return 0;
