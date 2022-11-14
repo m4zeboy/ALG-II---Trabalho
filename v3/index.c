@@ -19,7 +19,7 @@ int main(void) {
   documentos = NULL;
   transporte = NULL;
   moradia = NULL;
-  
+
   carregaCidadaos(&cidadaos);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
@@ -81,7 +81,7 @@ int main(void) {
                     strcpy(temp->nome, dados.nome);
                     printf("Nome atualizado com sucesso.\n");
                   } else {
-                    printf("Cidadao nao encontrado.\n");
+                   fprintf(stderr,"Cidadao nao encontrado.\n");
                   }
                   break;
                 case '2': 
@@ -113,7 +113,7 @@ int main(void) {
                   }
                 break;             
                 default:
-                  printf("Opcao Invalida\n");
+                  fprintf(stderr,"Opcao Invalida\n");
                   break;
               }
             } while(op_at != '0');
@@ -145,8 +145,7 @@ int main(void) {
             break;
         }
       } while(op_sub != '0');
-    }
-    if(op == '2') {
+    } else if(op == '2') {
       printf("Codigo: ");
       scanf("%d", &(dados.codigo));
       temp = buscaCidadao(cidadaos, dados.codigo);
@@ -169,8 +168,7 @@ int main(void) {
       } else {
         fprintf(stderr, "Cidadao nao encontrado.\n");
       }
-    }
-    if(op == '3') {
+    } else if(op == '3') {
       printf("Nome do Servidor Publico: ");
       scanf(" %[^\n]", atTemp.servidor);
       printf("Mesa disponivel: ");
@@ -196,8 +194,7 @@ int main(void) {
         registrarAtendimento(&transporte, atTemp);
       }
       sair = sair - 1;
-    }
-    if(op == '4') {
+    } else if(op == '4') {
       /* relatorios */
       do {
         printf("1 CIDADAOS CADASTRADOS\n2 CIDADAOS NAO ATENDIDOS\n3 ATENDIMENTOS REALIZADOS\n0 VOLTAR\n");
@@ -227,10 +224,12 @@ int main(void) {
           break;
         }
       } while(op_sub != '0');
-    }
-    if((op == 's' || op == 'S') && sair == 0) {
+    } else if((op == 's' || op == 'S') && sair == 0) {
       break;
+    } else {
+      fprintf(stderr, "Opção inválida.\n");
     }
+  
   } while(1);
   /* persistencia dos dados */
   salvarCidadaos(cidadaos);
