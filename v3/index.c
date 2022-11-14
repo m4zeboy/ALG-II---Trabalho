@@ -10,14 +10,16 @@ int main(void) {
   int contadorDeSenhas, sair;
   Senha senhaDados, *fila, *filaP, *proxima, *stemp;
   Atedimento atTemp, *documentos, *transporte, *moradia;
-  /* sair é inicializado com zero pois, de início não tem senha na fila portanto o usuário pode sair do programa. */
+  /* sair é inicializado com zero pois, de início não tem senha na fila portanto o usuário PODE sair do programa. */
   sair = 0;
   cidadaos=NULL;
   fila=NULL;
   filaP=NULL;
+  /* listas de atendimentos realizados */
   documentos = NULL;
   transporte = NULL;
   moradia = NULL;
+  
   carregaCidadaos(&cidadaos);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
@@ -230,6 +232,7 @@ int main(void) {
       break;
     }
   } while(1);
+  /* persistencia dos dados */
   salvarCidadaos(cidadaos);
   salvarContadorDeSenhas(contadorDeSenhas);
   persistenciaAtendimentos(documentos, "documentos.data");

@@ -175,7 +175,7 @@ void persistenciaAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
   p = lista;
   while(p) {
     /* chave;codigo_cidadao;servico;servidor;mesa*/
-    fprintf(arq, "%d;%d;%s;%s;%d\n",p->chave,p->codigoCidada,p->servico,p->servidor,p->mesa);
+    fprintf(arq, "%d;%d;%s;%s;%d\n",p->chave,p->codigoCidadao,p->servico,p->servidor,p->mesa);
     p = p->prox;
   }
   fclose(arq);
