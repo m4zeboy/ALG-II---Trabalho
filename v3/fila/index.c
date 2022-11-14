@@ -37,14 +37,33 @@ void mostraFila(Senha *fila) {
   }
 }
 
+void insereEmOrder(Senha **fila, int x) {
+  Senha *nova, *p, *q;
+  nova = (Senha *) malloc(sizeof(Senha));
+  if(nova) {
+    p = NULL; q = *fila;
+    while(q != NULL && x > q->chave){
+      p = q;
+      q = q->prox;
+    }
+    nova->chave = x;
+    nova->prox = q;
+    if(p == NULL) {
+      *fila = nova;
+    } else {
+      p->prox = nova;
+    }
+  }
+}
+
 
 int main(void){
   Senha *fila;
   fila = NULL;
-  enfileirar(&fila, 1);
-  enfileirar(&fila, 2);
-  enfileirar(&fila, 3);
-  enfileirar(&fila, 4);
+  insereEmOrder(&fila, 10);
+  insereEmOrder(&fila, 2);
+  insereEmOrder(&fila, 45);
+  insereEmOrder(&fila, 26);
   mostraFila(fila);
   return 0;
 }

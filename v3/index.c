@@ -5,22 +5,20 @@
 #include "senhas.h"
 
 int main(void) {
-  Cidadao *lista, dados, *temp;
+  Cidadao *cidadaos, dados, *temp;
   char op,  op_sub, op_at;
   int contadorDeSenhas, sair;
   Senha senhaDados, *fila, *filaP, *proxima, *stemp;
   Atedimento atTemp, *documentos, *transporte, *moradia;
   /* sair é inicializado com zero pois, de início não tem senha na fila portanto o usuário pode sair do programa. */
   sair = 0;
-  lista=NULL;
+  cidadaos=NULL;
   fila=NULL;
   filaP=NULL;
-  
   documentos = NULL;
   transporte = NULL;
   moradia = NULL;
-
-  carregaCidadaos(&lista);
+  carregaCidadaos(&cidadaos);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
     printf("1 CIDADAO\n2 GERAR SENHA\n3 ATENDIMENTO AO CIDADAO\n4 RELATORIOS\nS SAIR\n");
@@ -30,32 +28,29 @@ int main(void) {
         printf("1 CADASTRAR\n2 PESQUISAR POR CODIGO\n3 ATUALIZAR CADASTRO\n4 EXCLUIR CADASTRO\n0 VOLTAR\n");
         scanf(" %c", &op_sub);
 
-        switch (op_sub){
+        switch (op_sub) {
           case '1':
           /* 1. cadastrar */
             printf("Codigo: ");
             scanf("%d", &(dados.codigo));
-            if(buscaCidadao(lista, dados.codigo) != NULL) {
+            if(buscaCidadao(cidadaos, dados.codigo) != NULL) {
               fprintf(stderr, "Cidadao ja cadastrado com esse codigo.\n");
             } else {
               /* cadastrar cidadão novo*/
               printf("Nome: ");
               scanf(" %[^\n]", dados.nome);
-
               printf("Idade: ");
               scanf("%d", &(dados.idade));
-
               printf("Estado: ");
               scanf(" %[^\n]", dados.estado);
-
-              insereCidadaoEmOrdem(&lista, dados);
+              insereCidadaoEmOrdem(&cidadaos, dados);
             }
             break;
           case '2':
           /* 2. pesquisar por codigo */
             printf("Codigo: ");
             scanf("%d", &(dados.codigo));
-            temp = buscaCidadao(lista, dados.codigo);
+            temp = buscaCidadao(cidadaos, dados.codigo);
             if(temp != NULL) {
               printf("Codigo: %d Nome: %s Idade: %d UF: %s\n", 
               temp->codigo,
@@ -77,7 +72,7 @@ int main(void) {
                   /* atualizar nome */
                   printf("Informe o codigo do cidadao: ");
                   scanf("%d", &(dados.codigo));
-                  temp = buscaCidadao(lista, dados.codigo);
+                  temp = buscaCidadao(cidadaos, dados.codigo);
                   if(temp != NULL) {
                     printf("Informe o novo nome: ");
                     scanf(" %[^\n]", dados.nome);
@@ -91,7 +86,7 @@ int main(void) {
                   /* atualizar idade */
                   printf("Informe o codigo do cidadao: ");
                   scanf("%d", &(dados.codigo));
-                  temp = buscaCidadao(lista, dados.codigo);
+                  temp = buscaCidadao(cidadaos, dados.codigo);
                   if(temp != NULL) {
                     printf("Informe a nova idade: ");
                     scanf("%d", &(dados.idade));
@@ -105,7 +100,7 @@ int main(void) {
                   /* atualizar estado */
                   printf("Informe o codigo do cidadao: ");
                   scanf("%d", &(dados.codigo));
-                  temp = buscaCidadao(lista, dados.codigo);
+                  temp = buscaCidadao(cidadaos, dados.codigo);
                   if(temp != NULL) {
                     printf("Informe o novo estado: ");
                     scanf(" %[^\n]", dados.estado);
@@ -125,7 +120,7 @@ int main(void) {
           /* excluir cadastro */
             printf("Informe o codigo do cidadao: ");
             scanf("%d", &(dados.codigo));
-            temp = buscaCidadao(lista, dados.codigo);
+            temp = buscaCidadao(cidadaos, dados.codigo);
             if(temp->idade >= 65) {
               /* verificar se o cidadão está na fila preferencial */
               stemp = buscaCidadaoNaFila(filaP, dados.codigo);
@@ -135,7 +130,7 @@ int main(void) {
             }
             if(stemp == NULL) {
               /* Pode excluir */
-              excluiCadastro(&lista, dados.codigo);
+              excluiCadastro(&cidadaos, dados.codigo);
             } else {
               /* Não pode excluir, o cidadao está esperando na fila. */
               fprintf(stderr,"Nao e possivel escluir o cadastro do cidadao, porque ele esta esperando na fila.\n");
@@ -149,11 +144,10 @@ int main(void) {
         }
       } while(op_sub != '0');
     }
-
     if(op == '2') {
       printf("Codigo: ");
       scanf("%d", &(dados.codigo));
-      temp = buscaCidadao(lista, dados.codigo);
+      temp = buscaCidadao(cidadaos, dados.codigo);
       if(temp) {
         contadorDeSenhas = contadorDeSenhas + 1;
         senhaDados.chave = contadorDeSenhas;
@@ -174,7 +168,6 @@ int main(void) {
         fprintf(stderr, "Cidadao nao encontrado.\n");
       }
     }
-  
     if(op == '3') {
       printf("Nome do Servidor Publico: ");
       scanf(" %[^\n]", atTemp.servidor);
@@ -186,38 +179,45 @@ int main(void) {
         proxima = desenfileirar(&filaP);
       }
       atTemp.chave = proxima->chave;
+      atTemp.codigoCidadao = proxima->codigoCidadao;
       strcpy(atTemp.servico, proxima->servico);
-      printf("proxima senha: %d\n", proxima->chave);
+      printf("proxima senha: %d - servico: %s\n", proxima->chave, atTemp.servico);
       free(proxima);
-
       if(strcmp(atTemp.servico, "documentos") == 0) {
         /* salvar na lista de documentos */
+        registrarAtendimento(&documentos, atTemp);
       } else if(strcmp(atTemp.servico, "moradia") == 0) {
         /* salvar na lista de moradia */
+        registrarAtendimento(&moradia, atTemp);
       } else if(strcmp(atTemp.servico, "transporte") == 0) {
         /* salvar na lista de transporte */
-        
+        registrarAtendimento(&transporte, atTemp);
       }
-
-
       sair = sair - 1;
     }
-
     if(op == '4') {
+      /* relatorios */
       do {
         printf("1 CIDADAOS CADASTRADOS\n2 CIDADAOS NAO ATENDIDOS\n3 ATENDIMENTOS REALIZADOS\n0 VOLTAR\n");
         scanf(" %c", &op_sub);
-        switch (op_sub)
-        {
+        switch (op_sub) {
         case '1':
         /* RELATORIO DE CIDADAOS CADASTRADOS */
-          cidadaosCadastrados(lista);
+          relatorioCidadaosCadastrados(cidadaos);
           printf("Confira o arquivo 'cidadaos.csv'.\n");
           break;
         case '2':
         /* RELATORIO DE CIDADAOS NAO ATENDIDOS */
-          relatorioProximos(fila, filaP, lista);
+          relatorioProximos(fila, filaP, cidadaos);
+          printf("Confira o arquivo 'proximos.csv'.\n");
           break;
+        case '3': 
+        /* RELATORIO DE TODOS OS CIDADAOS ATENDIDOS */
+          relatorioAtendimentos(documentos, "documentos.csv", cidadaos);
+          relatorioAtendimentos(moradia, "moradia.csv", cidadaos);
+          relatorioAtendimentos(transporte, "transporte.csv", cidadaos);
+          printf("Confira o arquivos 'documentos.csv', 'moradia.csv' e 'transporte.csv'.\n");
+        break;
         default:
           if(op_sub != '0') {
             fprintf(stderr, "Opção invalida.\n");
@@ -225,16 +225,15 @@ int main(void) {
           break;
         }
       } while(op_sub != '0');
-      /* relatorios */
-      
     }
-  
     if((op == 's' || op == 'S') && sair == 0) {
       break;
     }
-
   } while(1);
-  salvarCidadaos(lista);
+  salvarCidadaos(cidadaos);
   salvarContadorDeSenhas(contadorDeSenhas);
+  persistenciaAtendimentos(documentos, "documentos.data");
+  persistenciaAtendimentos(moradia, "moradia.data");
+  persistenciaAtendimentos(transporte, "transporte.data");
   return 0;
 }

@@ -44,8 +44,9 @@ void carregarContadorDeSenhas(int *contadorDeSenhas) {
     if(status == -1) {
       *contadorDeSenhas = 0; 
     }
+    fclose(arq);
   } else {
-    printf("Falaha ao abrir o arquivo 'contadorDeSenhas.data'.\n");
+    fprintf(stderr, "Falaha ao abrir o arquivo 'contadorDeSenhas.data'.\n");
   }
 }
 
@@ -118,27 +119,67 @@ Senha *buscaCidadaoNaFila(Senha *fila, int codigo) {
   return buscaCidadaoNaFila(fila->prox, codigo);
 } 
 
-void copiaDadosDeAtendimento(Atedimento *nova, Atedimento dados) {
-  nova->chave = dados.chave;
-  nova->codigoCidadao = dados.codigoCidadao;
-  nova->mesa = dados.mesa;
-  strcpy(nova->servico, dados.servico);
-  strcpy(nova->servidor, dados.servidor);
-  nova->prox = NULL;
-}
-
 void registrarAtendimento(Atedimento **lista, Atedimento dados) {
+  /* Essa função registra o atendimento na respectiva lista, documentos, transporte ou moradia, inserindo o novo registro em ordem pela senha (chave) */
   Atedimento *nova, *p, *q;
   nova = (Atedimento *) malloc(sizeof(Atedimento));
   if(nova) {
-    copiaDadosDeAtendimento(nova, dados);
+    
+    nova->chave = dados.chave;
+    nova->codigoCidadao = dados.codigoCidadao;
+    nova->mesa = dados.mesa;
+    strcpy(nova->servico, dados.servico);
+    strcpy(nova->servidor, dados.servidor);
+
     p = NULL; q = *lista;
     while (q) {
       p = q;
       q = q->prox;
     }
-    p->prox = nova;
+    nova->prox = q;
+    if(p == NULL) {
+      *lista = nova;
+    } else {
+      p->prox = nova;
+    }
   } else {
     fprintf(stderr, "Erro ao alocar memória.\n");
+  }
+}
+
+void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *listaCidadaos) {
+  FILE *arq;
+  Atedimento *p;
+  Cidadao *temp;
+  arq = fopen(nomeDoArquivo, "a");
+  if(arq) {
+    p = lista;
+    while(p) {
+      /* buscar os dados do ciadao */
+      temp = buscaCidadao(listaCidadaos, p->codigoCidadao);
+      /* chave;nome;idade;nome_do_servidor;mesa*/
+      fprintf(arq, "%d;%s;%d;%s;%d\n", p->chave,temp->nome,temp->idade,p->servidor, p->mesa);
+      p = p->prox;
+    }
+    fclose(arq);
+  } else {
+    fprintf(stderr, "Falaha ao abrir o arquivo '%s'.\n", nomeDoArquivo);
+  }
+}
+
+void persistenciaAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
+  FILE *arq;
+  Atedimento *p;
+  arq = fopen(nomeDoArquivo, "a");
+  if(arq) {
+  p = lista;
+  while(p) {
+    /* chave;codigo_cidadao;servico;servidor;mesa*/
+    fprintf(arq, "%d;%d;%s;%s;%d\n",p->chave,p->codigoCidada,p->servico,p->servidor,p->mesa);
+    p = p->prox;
+  }
+  fclose(arq);
+  } else {
+    fprintf(stderr, "Falaha ao abrir o arquivo '%s'.\n", nomeDoArquivo);
   }
 }

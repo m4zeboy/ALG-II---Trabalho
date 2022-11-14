@@ -124,7 +124,7 @@ void excluiCadastro(Cidadao **lista, int codigo) {
   }
 }
 
-void cidadaosCadastrados(Cidadao *lista) {
+void relatorioCidadaosCadastrados(Cidadao *lista) {
   FILE *arq;
   arq = fopen("cidadaos.csv", "w");
   if(arq) {
