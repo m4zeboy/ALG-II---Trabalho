@@ -97,8 +97,8 @@ void excluiCadastro(Cidadao **lista, int codigo) {
 }
 
 /* Recebe a lista de cidadãos, abre o arquivo informado por parâmetro, percorre o mesmo e escreve um registro por linha */
-void escreveCidadaos(Cidadao *lista, char *nomeDoArquivo);
-void escreveCidadaos(Cidadao *lista, char *nomeDoArquivo) {
+void salvarCidadaos(Cidadao *lista, char *nomeDoArquivo);
+void salvarCidadaos(Cidadao *lista, char *nomeDoArquivo) {
   FILE *arq;
   arq = fopen(nomeDoArquivo, "w");
   if(arq) {

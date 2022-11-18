@@ -40,7 +40,6 @@ void carregarContadorDeSenhas(int *contadorDeSenhas) {
   arq = fopen("contadorDeSenhas.data", "r");
   if(arq) {
     status = fscanf(arq, "%d", contadorDeSenhas);
-    printf("status: %d\n", status);
     if(status == -1) {
       *contadorDeSenhas = 0; 
     }
@@ -167,7 +166,7 @@ void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *lis
   }
 }
 
-void persistenciaAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
+void salvarAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
   FILE *arq;
   Atedimento *p;
   arq = fopen(nomeDoArquivo, "a");
