@@ -36,7 +36,7 @@ void enfileirar(Senha **fila, Senha dados) {
   }
 }
 
-/* Recebe o pontiero do contador de senhas, abre o arquivo e lê o número que está gravado no arquivo, se o arquivo estiver vazio, o contador recebe o valor 0*/
+/* Recebe o pontiero do contador de senhas, abre o arquivo e lê o número que está gravado no arquivo, se o arquivo estiver vazio ou o programa não conseguir abrir o arquivo, o contador recebe o valor 0*/
 void carregarContadorDeSenhas(int *contadorDeSenhas);
 void carregarContadorDeSenhas(int *contadorDeSenhas) {
   FILE *arq;
@@ -45,11 +45,12 @@ void carregarContadorDeSenhas(int *contadorDeSenhas) {
   if(arq) {
     status = fscanf(arq, "%d", contadorDeSenhas);
     if(status == -1) {
-      *contadorDeSenhas = 0; 
+      *contadorDeSenhas = 0;
     }
     fclose(arq);
   } else {
-    fprintf(stderr, "Falaha ao abrir o arquivo 'contadorDeSenhas.data'.\n");
+    *contadorDeSenhas = 0;
+    fprintf(stderr, "Falha ao abrir o arquivo 'contadorDeSenhas.data'.\n");
   }
 }
 

@@ -161,7 +161,7 @@ int main(void) {
           printf("Senha inserida na Fila Preferencial\n");
           enfileirar(&filaP, senhaDados);
         } else {
-          printf("Senha inserida na Fila Nao PreferencialL\n");
+          printf("Senha inserida na Fila Nao Preferencial\n");
           enfileirar(&fila, senhaDados);
         }
         /* Sair é incrementado */
