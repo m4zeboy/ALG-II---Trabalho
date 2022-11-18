@@ -10,6 +10,8 @@ typedef struct atedimento {
   struct atedimento *prox;
 } Atedimento;
 
+/* Recebe os dados da senha e insere no fim da lista */
+void enfileirar(Senha **fila, Senha dados);
 void enfileirar(Senha **fila, Senha dados) {
   Senha *nova, *p, *q;
   nova = (Senha *) malloc(sizeof(Senha));
@@ -34,6 +36,8 @@ void enfileirar(Senha **fila, Senha dados) {
   }
 }
 
+/* Recebe o pontiero do contador de senhas, abre o arquivo e lê o número que está gravado no arquivo, se o arquivo estiver vazio, o contador recebe o valor 0*/
+void carregarContadorDeSenhas(int *contadorDeSenhas);
 void carregarContadorDeSenhas(int *contadorDeSenhas) {
   FILE *arq;
   int status;
@@ -49,6 +53,8 @@ void carregarContadorDeSenhas(int *contadorDeSenhas) {
   }
 }
 
+/* Salva o contador de senhas no arquivo */
+void salvarContadorDeSenhas(int contadorDeSenhas);
 void salvarContadorDeSenhas(int contadorDeSenhas) {
   FILE *arq;
   arq = fopen("contadorDeSenhas.data", "w");
@@ -59,13 +65,8 @@ void salvarContadorDeSenhas(int contadorDeSenhas) {
   }
 }
 
-void mostrarFila(Senha *fila) {
-  if(fila) {
-    printf("chave: %d; servico: %s\n", fila->chave, fila->servico);
-    mostrarFila(fila->prox);
-  }
-}
-
+/* Recebe os ponteiros para o início das duas filas e o ponteiro para o começo da lista de cidadãos. abre o arquivo proximos.csv e percorre cada fila, em cada iteração busca o cidadao e escreve os dados. */
+void relatorioProximos(Senha *fila, Senha *filaP, Cidadao *lista);
 void relatorioProximos(Senha *fila, Senha *filaP, Cidadao *lista) {
   FILE *arq;
   Cidadao *temp;
@@ -102,6 +103,8 @@ void relatorioProximos(Senha *fila, Senha *filaP, Cidadao *lista) {
   }
 }
 
+/* Recebe o ponteiro para o começo da fila, remove o primeiro elemento e o retorna. a liberação de memória é feito na função principal */
+Senha *desenfileirar(Senha **fila);
 Senha *desenfileirar(Senha **fila) {
   /* desenfileirar o primeiro elemento */
   Senha *remove;
@@ -110,7 +113,9 @@ Senha *desenfileirar(Senha **fila) {
   return remove;
 }
 
+/* Função recursiva que recebe uma fila e um código de cidadão e devolve o ponteiro caso encontre uma senha com o campo codigoCidadão correspondete ao parâmetro código informado, se não retona NULL */
 Senha *buscaCidadaoNaFila(Senha *fila, int codigo) {
+Senha *buscaCidadaoNaFila(Senha *fila, int codigo);
   if(fila == NULL)
     return NULL;
   if(fila->codigoCidadao == codigo)
@@ -118,8 +123,10 @@ Senha *buscaCidadaoNaFila(Senha *fila, int codigo) {
   return buscaCidadaoNaFila(fila->prox, codigo);
 } 
 
+/* Recebe a lista de atendimento e os dados do atendimento. cria um atendimento, copia os dados e insere na lista ordenado pela senha (campo chave) */
+void registrarAtendimento(Atedimento **lista, Atedimento dados);
 void registrarAtendimento(Atedimento **lista, Atedimento dados) {
-  /* Essa função registra o atendimento na respectiva lista, documentos, transporte ou moradia, inserindo o novo registro em ordem pela senha (chave) */
+  /* A função principal fica responsável com a lógica de escolher a lista de atendimento (documentos, moradia, transporte) */
   Atedimento *nova, *p, *q;
   nova = (Atedimento *) malloc(sizeof(Atedimento));
   if(nova) {
@@ -146,6 +153,8 @@ void registrarAtendimento(Atedimento **lista, Atedimento dados) {
   }
 }
 
+/* A função gera o relátorio dos atendimentos realizados. Recebe a lista de atendimentos, o nome do arquivo e lista de cidadãos. abre o arquivo, percorre a lista, a cada iteração busca as informações do respectivo cidadão e imprime no arquivo  */
+void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *listaCidadaos);
 void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *listaCidadaos) {
   FILE *arq;
   Atedimento *p;
@@ -166,6 +175,8 @@ void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *lis
   }
 }
 
+/* Muito parecida com a função anterior, só não recebe a lista de cidadãos, pois guarda no arquivo somente os dados da struct Atendimento */
+void salvarAtendimentos(Atedimento *lista, char nomeDoArquivo[]);
 void salvarAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
   FILE *arq;
   Atedimento *p;
