@@ -28,7 +28,6 @@ void enfileirar(Senha **fila, Senha dados) {
       *fila = nova;
     } else {
       p->prox = nova;
-      nova->prox = NULL;
     }
   } else {
     fprintf(stderr, "Erro ao alocar memória.\n");
@@ -41,6 +40,7 @@ void carregarContadorDeSenhas(int *contadorDeSenhas) {
   arq = fopen("contadorDeSenhas.data", "r");
   if(arq) {
     status = fscanf(arq, "%d", contadorDeSenhas);
+    printf("status: %d\n", status);
     if(status == -1) {
       *contadorDeSenhas = 0; 
     }

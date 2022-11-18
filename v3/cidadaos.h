@@ -1,9 +1,12 @@
+/* Dados de cadastro do cidadao: código, nome, idade, estado. */
 typedef struct cidadao {
   int codigo, idade;
   char nome[30], estado[3];
   struct cidadao *prox;
 } Cidadao;
 
+/* Recebe um código de um possível cidadão, procura na lista e devolve o ponteiro para o cidadao */
+Cidadao *buscaCidadao(Cidadao *lista, int codigo);
 Cidadao *buscaCidadao(Cidadao *lista, int codigo) {
   Cidadao *achado = lista;
   while(achado && achado->codigo != codigo) {
@@ -12,6 +15,8 @@ Cidadao *buscaCidadao(Cidadao *lista, int codigo) {
   return achado;
 } 
 
+/* Recebe os dados do cidadão e insere na lista ordenado pelo código. Essa função não tem a responsabilidade de verificar se o código informado já existe na lista, essa parte fica com a função principal */
+void insereCidadaoEmOrdem(Cidadao **lista, Cidadao dados);
 void insereCidadaoEmOrdem(Cidadao **lista, Cidadao dados) {
   Cidadao *p, *q, *nova;
   p = NULL; q = *lista;
@@ -36,18 +41,8 @@ void insereCidadaoEmOrdem(Cidadao **lista, Cidadao dados) {
   }
 }
 
-void _mostraCidadaos(Cidadao *lista) {
-  if(lista) {
-    printf("Codigo: %d Nome: %s Idade: %d UF: %s\n", 
-    lista->codigo,
-    lista->nome,
-    lista->idade,
-    lista->estado
-    );
-    _mostraCidadaos(lista->prox);
-  }
-}
-
+/* Recebe uma Lista vazia, abre o arquivo cidadaos.data, percorre o mesmo e insere na lista */
+void carregaCidadaos(Cidadao **lista);
 void carregaCidadaos(Cidadao **lista) {
   FILE *arq;
   Cidadao dados;
@@ -73,36 +68,14 @@ void carregaCidadaos(Cidadao **lista) {
         dados.estado
       );
     }
-    
-    fclose(arq);
-  } else {
-    printf("Não foi possível abrir o arquivo cidadaos.data.\n");
-  } 
-}
-
-void salvarCidadaos(Cidadao *lista) {
-  FILE *arq;
-  Cidadao *p;
-  p = lista;
-  arq = fopen("cidadaos.data", "w");
-  if(arq) {
-    while(p) {
-      fprintf(
-        arq,
-        "%d;%s;%d;%s\n",
-        p->codigo,
-        p->nome,
-        p->idade,
-        p->estado
-      );
-      p = p->prox;
-    }
     fclose(arq);
   } else {
     fprintf(stderr,"Não foi possível abrir o arquivo cidadaos.data.\n");
   } 
 }
 
+/* Recebe o código de um possivel cidadão e exclui o cadastro (ajusta os ponteiros e libera memoria) */
+void excluiCadastro(Cidadao **lista, int codigo);
 void excluiCadastro(Cidadao **lista, int codigo) {
   Cidadao *p, *q;
   p = NULL; q = *lista;
@@ -110,7 +83,6 @@ void excluiCadastro(Cidadao **lista, int codigo) {
     p = q;
     q = q->prox;
   }
-
   if (q != NULL) {
     if(p == NULL) {
       *lista = q->prox;
@@ -124,9 +96,11 @@ void excluiCadastro(Cidadao **lista, int codigo) {
   }
 }
 
-void relatorioCidadaosCadastrados(Cidadao *lista) {
+/* Recebe a lista de cidadãos, abre o arquivo informado por parâmetro, percorre o mesmo e escreve um registro por linha */
+void escreveCidadaos(Cidadao *lista, char *nomeDoArquivo);
+void escreveCidadaos(Cidadao *lista, char *nomeDoArquivo) {
   FILE *arq;
-  arq = fopen("cidadaos.csv", "w");
+  arq = fopen(nomeDoArquivo, "w");
   if(arq) {
     while(lista) {
       fprintf(arq,"%d;%s;%d;%s\n", lista->codigo, lista->nome, lista->idade, lista->estado);
@@ -134,6 +108,6 @@ void relatorioCidadaosCadastrados(Cidadao *lista) {
     }
     fclose(arq);
   } else {
-    fprintf(stderr, "Não foi possível abrir o arquivo cidadaos.csv.\n");
+    fprintf(stderr, "Não foi possível abrir o arquivo '%s'.\n", nomeDoArquivo);
   }
 }

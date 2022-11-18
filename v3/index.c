@@ -4,6 +4,8 @@
 #include "cidadaos.h"
 #include "senhas.h"
 
+/* Desinged by Moisés Silva de Azevedo, São Paulo */
+
 int main(void) {
   Cidadao *cidadaos, dados, *temp;
   char op,  op_sub, op_at;
@@ -22,6 +24,7 @@ int main(void) {
 
   carregaCidadaos(&cidadaos);
   carregarContadorDeSenhas(&contadorDeSenhas);
+  printf("contador: %d\n", contadorDeSenhas);
   do {
     printf("1 CIDADAO\n2 GERAR SENHA\n3 ATENDIMENTO AO CIDADAO\n4 RELATORIOS\nS SAIR\n");
     scanf(" %c", &op);
@@ -135,7 +138,7 @@ int main(void) {
               excluiCadastro(&cidadaos, dados.codigo);
             } else {
               /* Não pode excluir, o cidadao está esperando na fila. */
-              fprintf(stderr,"Nao e possivel escluir o cadastro do cidadao, porque ele esta esperando na fila.\n");
+              fprintf(stderr,"Nao e possivel excluir o cadastro do cidadao, porque ele esta esperando na fila.\n");
             }
             break;
           default:
@@ -202,7 +205,7 @@ int main(void) {
         switch (op_sub) {
         case '1':
         /* RELATORIO DE CIDADAOS CADASTRADOS */
-          relatorioCidadaosCadastrados(cidadaos);
+          escreveCidadaos(cidadaos, "cidadaos.csv");
           printf("Confira o arquivo 'cidadaos.csv'.\n");
           break;
         case '2':
@@ -224,15 +227,18 @@ int main(void) {
           break;
         }
       } while(op_sub != '0');
-    } else if((op == 's' || op == 'S') && sair == 0) {
-      break;
+    } else if(op == 's' || op == 'S') {
+      if(sair == 0) {
+        break;
+      } else {
+        printf("Ainda tem cidadaos na fila.\n");
+      }
     } else {
       fprintf(stderr, "Opção inválida.\n");
     }
-  
   } while(1);
   /* persistencia dos dados */
-  salvarCidadaos(cidadaos);
+  escreveCidadaos(cidadaos, "cidadaos.data");
   salvarContadorDeSenhas(contadorDeSenhas);
   persistenciaAtendimentos(documentos, "documentos.data");
   persistenciaAtendimentos(moradia, "moradia.data");
