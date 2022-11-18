@@ -175,7 +175,7 @@ void relatorioAtendimentos(Atedimento *lista, char nomeDoArquivo[], Cidadao *lis
   }
 }
 
-/* Muito parecida com a função anterior, só não recebe a lista de cidadãos, pois guarda no arquivo somente os dados da struct Atendimento */
+/* Muito parecida com a função anterior, só não recebe a lista de cidadãos, pois guarda no arquivo somente os dados da struct Atendimento. Preserva os dados das execuções anteriores pois não usa a flag write "w", mas usa a flag append "a"*/
 void salvarAtendimentos(Atedimento *lista, char nomeDoArquivo[]);
 void salvarAtendimentos(Atedimento *lista, char nomeDoArquivo[]) {
   FILE *arq;

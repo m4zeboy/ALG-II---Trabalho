@@ -158,10 +158,10 @@ int main(void) {
         scanf(" %s", senhaDados.servico);
         /* Verificar se o cidadao é preferencial ou não */
         if(temp->idade >= 65) {
-          printf("FILA PREFERENCIAL\n");
+          printf("Senha inserida na Fila Preferencial\n");
           enfileirar(&filaP, senhaDados);
         } else {
-          printf("FILA NAO PREFERENCIAL\n");
+          printf("Senha inserida na Fila Nao PreferencialL\n");
           enfileirar(&fila, senhaDados);
         }
         /* Sair é incrementado */
@@ -183,7 +183,7 @@ int main(void) {
       atTemp.chave = proxima->chave;
       atTemp.codigoCidadao = proxima->codigoCidadao;
       strcpy(atTemp.servico, proxima->servico);
-      printf("proxima senha: %d - servico: %s\n", proxima->chave, atTemp.servico);
+      printf("Proxima Senha: %d - Servico: %s - Mesa: %d\n", proxima->chave, atTemp.servico, atTemp.mesa);
       free(proxima);
       /* Registrar o atendimento na lista de acordo com o servico requisitado */
       if(strcmp(atTemp.servico, "documentos") == 0) {
