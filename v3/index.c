@@ -25,15 +25,18 @@ int main(void) {
   carregaCidadaos(&cidadaos);
   carregarContadorDeSenhas(&contadorDeSenhas);
   do {
+    system("cls");
     printf("1 CIDADAO\n2 GERAR SENHA\n3 ATENDIMENTO AO CIDADAO\n4 RELATORIOS\nS SAIR\n");
     scanf(" %c", &op);
     if(op == '1') {
       do {
+        system("cls");
         printf("1 CADASTRAR\n2 PESQUISAR POR CODIGO\n3 ATUALIZAR CADASTRO\n4 EXCLUIR CADASTRO\n0 VOLTAR\n");
         scanf(" %c", &op_sub);
         switch (op_sub) {
           case '1':
           /* 1. Cadastrar */
+            system("cls");
             printf("Codigo: ");
             scanf("%d", &(dados.codigo));
             if(buscaCidadao(cidadaos, dados.codigo) != NULL) {
@@ -51,6 +54,7 @@ int main(void) {
             break;
           case '2':
           /* 2. Pesquisar por codigo */
+          system("cls");
             printf("Codigo: ");
             scanf("%d", &(dados.codigo));
             temp = buscaCidadao(cidadaos, dados.codigo);
@@ -67,6 +71,7 @@ int main(void) {
             break;
           case '3':
           /* 3. Atualizar cadasatro */
+          system("cls");
             do {
               printf("1 NOME\n2 IDADE\n3 UF\n0 VOLTAR\n");
               scanf(" %c", &op_at);
@@ -121,6 +126,7 @@ int main(void) {
             break;
           case '4':
           /* Excluir cadastro */
+            system("cls");      
             printf("Informe o codigo do cidadao: ");
             scanf("%d", &(dados.codigo));
             temp = buscaCidadao(cidadaos, dados.codigo);
@@ -147,6 +153,7 @@ int main(void) {
         }
       } while(op_sub != '0');
     } else if(op == '2') {
+      system("cls");
       printf("Codigo: ");
       scanf("%d", &(dados.codigo));
       temp = buscaCidadao(cidadaos, dados.codigo);
@@ -170,6 +177,7 @@ int main(void) {
         fprintf(stderr, "Cidadao nao encontrado.\n");
       }
     } else if(op == '3') {
+      system("cls");
       printf("Nome do Servidor Publico: ");
       scanf(" %[^\n]", atTemp.servidor);
       printf("Mesa disponivel: ");
@@ -228,12 +236,14 @@ int main(void) {
         }
       } while(op_sub != '0');
     } else if(op == 's' || op == 'S') {
+      system("cls");
       if(sair == 0) {
         break;
       } else {
         printf("Ainda tem cidadaos na fila.\n");
       }
     } else {
+      system("cls");
       fprintf(stderr, "Opção inválida.\n");
     }
   } while(1);

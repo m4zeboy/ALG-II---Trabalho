@@ -4,6 +4,7 @@
     ".stylelintrc": "json",
     ".prettierrc": "json",
     "*.tsx": "typescriptreact",
-    "cidadaos.h": "c"
+    "cidadaos.h": "c",
+    "senhas.h": "c"
   }
 }
