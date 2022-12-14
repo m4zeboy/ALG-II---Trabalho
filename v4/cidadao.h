@@ -14,7 +14,7 @@ void insereEmOrder(celula **lista, cidadao dados) {
     celula *p, *q;
     nova->dados = dados;
     p = NULL; q = *lista;
-    while(q && strcmp(dados.nome, q->dados.nome)) {
+    while(q && strcmp(dados.nome, q->dados.nome) > 0) {
       p = q;
       q = q->prox;
     }
@@ -53,6 +53,7 @@ void salvaCidadaos(celula *lista, char arquivo[]) {
     fprintf(stderr, "Erro ao abrir o arquivo '%s'.\n", arquivo);
   }
 }
+
 celula *buscaCidadao(celula *lista, int codigo) {
   if(lista == NULL) {
     return NULL;
@@ -61,4 +62,23 @@ celula *buscaCidadao(celula *lista, int codigo) {
     return lista;
   }
   return buscaCidadao(lista->prox, codigo);
+}
+
+void buscaRemove(celula **lista, int codigo) {
+  celula *p, *q;
+  p = NULL; q = *lista;
+  while(q && q->dados.codigo != codigo) {
+    p = q;
+    q = q->prox;
+  }
+  if(q == NULL) {
+    fprintf(stderr,"Cidadao nao encontrado.\n");
+  } else {
+    if(p != NULL) {
+      p->prox = q->prox;
+    } else {
+      *lista = q->prox;
+    }
+    free(q);
+  }
 }
