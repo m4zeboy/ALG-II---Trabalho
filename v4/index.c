@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cidadao.h"
+#include "senhas.h"
 
 int main(void) {
   celula *lista = NULL;
+  celula *temp;
   char op;
+  int codigo, contador;
   carregaCidadaos(&lista);
+  carregaContadorDeSenhas(&contador);
   do {
     system("cls");
     printf("1. CIDADAOS\nS. SAIR\n");
@@ -32,10 +36,9 @@ int main(void) {
             printf("UF: ");
             scanf(" %[^\n]", dados.uf);
             insereEmOrder(&lista, dados);
+            system("cls");
           }
         } else if(op_cid == '2') {
-        celula *temp;
-        int codigo;
         system("cls");
         printf("Codigo: ");
         scanf("%d", &codigo);
@@ -46,11 +49,10 @@ int main(void) {
           printf("Codigo: %d\tNome: %s\tIdade: %d\tUF: %s\n", temp->dados.codigo, temp->dados.nome, temp->dados.idade, temp->dados.uf);
         }
       } else if(op_cid == '3') {
-        int codigo;
         printf("Codigo: ");
         scanf("%d", &codigo);
         buscaRemove(&lista, codigo);
-      }
+      } 
 
     } while(op_cid != '0');
     } else if(op == 'S' || op == 's') {
@@ -58,5 +60,6 @@ int main(void) {
     }
   } while(1);
   salvaCidadaos(lista, "cidadaos.data");
+  salvarContadorDeSenhas(contador);
   return 0;
 }

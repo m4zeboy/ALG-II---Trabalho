@@ -49,6 +49,7 @@ void salvaCidadaos(celula *lista, char arquivo[]) {
       fprintf(arq, "%d;%s;%d;%s\n",lista->dados.codigo,lista->dados.nome,lista->dados.idade,lista->dados.uf);
       lista = lista->prox;
     }
+    fclose(arq);
   } else {
     fprintf(stderr, "Erro ao abrir o arquivo '%s'.\n", arquivo);
   }
